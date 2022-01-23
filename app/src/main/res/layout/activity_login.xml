@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_root"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightBackground"
+    tools:context=".login.LoginActivity">
+
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_centerInParent="true"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/login_card1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="#DDFFFFFF"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false">
+
+            <LinearLayout
+                android:id="@+id/login_ll1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/login_ipl_mobno"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/enter_mobile_number"
+                    app:boxStrokeColor="@color/seperator"
+                    app:hintTextColor="@color/seperator"
+                    app:startIconDrawable="@drawable/ic_user"
+                    app:startIconTint="@color/seperator"
+                    app:errorTextColor="@color/error"
+                    app:boxStrokeErrorColor="@color/error"
+                    android:layout_margin="20dp"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/login_et_mobile_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textColor="@color/textInET"
+                        android:maxLength="10"
+                        android:textSize="@dimen/normalText"
+                        android:textStyle="bold"
+                        android:autofillHints="phoneNational"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/login_btn_sent_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
+                    android:text="@string/send_otp"
+                    android:background="@color/buttonBackground"
+                    android:textAllCaps="false"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/login_card2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            app:cardBackgroundColor="#DDFFFFFF"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            android:visibility="gone"
+            >
+
+            <LinearLayout
+                android:id="@+id/enter_otp_ll1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/enter_otp_ipl"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/otp"
+                    app:boxStrokeColor="@color/seperator"
+                    app:hintTextColor="@color/seperator"
+                    app:startIconDrawable="@drawable/ic_otp"
+                    app:startIconTint="@color/seperator"
+                    app:errorTextColor="@color/error"
+                    app:boxStrokeErrorColor="@color/error"
+                    android:layout_margin="20dp"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/enter_otp_et_otp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/enter_otp_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="62dp"
+                    android:text="@string/verify"
+                    android:background="@color/buttonBackground"
+                    android:textAllCaps="false"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

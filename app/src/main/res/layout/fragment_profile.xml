@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/lightBackground"
+    tools:context=".home.ProfileFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_View"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="100dp"
+        android:padding="10dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp">
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/profile_page_btn_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/edit_border"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:drawablePadding="5dp"
+                    android:text="@string/edit_profile"
+                    android:textAllCaps="false"
+                    android:textColor="@color/black"
+                    android:textSize="12sp"
+                    />
+                <ProgressBar
+                    android:id="@+id/profile_page_pg"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="65dp"
+                    android:layout_height="8dp"
+                    android:indeterminate="true"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/profile_page_tv_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/style_tv"
+                    android:drawablePadding="10dp"
+                    android:gravity="center_vertical"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:singleLine="true"
+                    android:text="@string/blank"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold"
+                    android:textColor="@color/textInET"
+                    app:drawableStartCompat="@drawable/ic_user" />
+
+
+                <TextView
+                    android:id="@+id/profile_page_tv_mobile_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:drawablePadding="10dp"
+                    android:enabled="false"
+                    android:gravity="center_vertical"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="5dp"
+                    android:text="@string/blank"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold"
+                    android:textColor="@color/textInET"
+                    android:background="@drawable/style_tv"
+                    />
+
+                <TextView
+                    android:id="@+id/profile_page_tv_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:drawablePadding="10dp"
+                    android:paddingStart="7dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/blank"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold"
+                    android:textColor="@color/textInET"
+                    android:background="@drawable/style_tv"
+                    />
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/profile_page_btn_contactus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/buttonBackground"
+                    android:drawablePadding="5dp"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:text="Something here"
+                    android:textStyle="bold" />
+
+
+            </LinearLayout>
+        </ScrollView>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

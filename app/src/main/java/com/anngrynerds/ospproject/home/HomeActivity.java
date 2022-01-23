@@ -64,6 +64,6 @@ public class HomeActivity extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences("com.anngrynerds.ospproject.home", Context.MODE_PRIVATE);
         String phno = prefs.getString("id", "");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        startActivity(new Intent(HomeActivity.this, ProfileFill.class));
+//        startActivity(new Intent(HomeActivity.this, ProfileFill.class));
     }
 }

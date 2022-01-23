@@ -30,7 +30,7 @@ public class SplashScreen extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
 
             //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(SplashScreen.this, ProfileFill.class));
+            startActivity(new Intent(SplashScreen.this, HomeActivity.class));
 
         } else {
 

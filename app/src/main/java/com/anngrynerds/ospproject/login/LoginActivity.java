@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anngrynerds.ospproject.R;
+import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.databinding.ActivityLoginBinding;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -78,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         ipl_otp = findViewById(R.id.enter_otp_ipl);
         mAuth = FirebaseAuth.getInstance();
         FirebaseApp.initializeApp(context);
-        prefs = this.getSharedPreferences("com.anngrynerds.ospproject.home", Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
 
         ETmobileNo = findViewById(R.id.login_et_mobile_number);
@@ -226,8 +227,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 //                            Log.e("signCredential:success", "");
-
                             user = Objects.requireNonNull(task.getResult()).getUser();
+
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString("id", user.getPhoneNumber());
                             editor.apply();

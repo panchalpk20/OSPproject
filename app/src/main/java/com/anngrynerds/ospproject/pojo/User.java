@@ -7,13 +7,27 @@ public class User {
     String name;
     String lat;
     String lang;
+    String role;
+    String city;
 
-    public User(String mobNo, String address, String name, String lat, String lang) {
+    public User(){};
+
+    public User(String mobNo, String address, String name, String lat, String lang, String role, String city) {
         this.mobNo = mobNo;
         this.address = address;
         this.name = name;
         this.lat = lat;
         this.lang = lang;
+        this.role = role;
+        this.city = city;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getMobNo() {
@@ -54,6 +68,14 @@ public class User {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
 

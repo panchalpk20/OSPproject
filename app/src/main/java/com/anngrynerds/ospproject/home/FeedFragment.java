@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import com.anngrynerds.ospproject.R;
 
+public class FeedFragment extends Fragment {
 
-public class AIFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -19,15 +19,14 @@ public class AIFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public AIFragment() {
+    public FeedFragment() {
         // Required empty public constructor
     }
 
 
-    // TODO: Rename and change types and number of parameters
-    public static AIFragment newInstance() {
-        AIFragment fragment = new AIFragment();
-       /* Bundle args = new Bundle();
+    public static FeedFragment newInstance() {
+        FeedFragment fragment = new FeedFragment();
+        /*Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);*/
@@ -37,16 +36,20 @@ public class AIFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
+        /*if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        }*/
+
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_a_i, container, false);
+        View view = inflater.inflate(R.layout.fragment_feed, container, false);
+        return view;
     }
 }

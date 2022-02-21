@@ -13,4 +13,5 @@
     <color name="textInET">#181818</color>
     <color name="buttonBackground">#00C853</color>
     <color name="tranparent">#00F44336</color>
+    <color name="textColor">#0E0E0E</color>
 </resources>

@@ -9,12 +9,13 @@
         app:showAsAction="always"
         />
 
-<!--
     <item
-        android:id="@+id/bottom_menu_show_hotel_menu"
+        android:id="@+id/bottom_menu_show_feed"
         android:enabled="true"
         android:icon="@drawable/ic_user"
-        android:title="Menu"/>-->
+        android:title="Feed"
+        app:showAsAction="always"
+        />
 
     <item
         android:id="@+id/bottom_menu_profile"

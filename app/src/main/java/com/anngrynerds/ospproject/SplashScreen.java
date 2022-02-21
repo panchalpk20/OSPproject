@@ -8,9 +8,9 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.anngrynerds.ospproject.login.LoginActivity;
-import com.anngrynerds.ospproject.login.ProfileFill;
 import com.google.firebase.auth.FirebaseAuth;
 
 @SuppressLint("CustomSplashScreen")
@@ -23,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        prefs = this.getSharedPreferences("com.anngrynerds.ospproject.home", Context.MODE_PRIVATE);
+        prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
         String phno = prefs.getString("id", "");
 

@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.anngrynerds.ospproject.R;
+import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.anngrynerds.ospproject.pojo.User;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -46,7 +47,7 @@ import java.util.Map;
 public class ProfileFill extends AppCompatActivity {
 
     TextView temp;
-    String lat, lang;
+    String lat, longitude;
     private static final String TAG = "PROFILE_FRAG";
     EditText et_phno;
     EditText et_name;
@@ -65,10 +66,11 @@ public class ProfileFill extends AppCompatActivity {
     String str_name;
     String str_address;
     String str_role;
+    String str_city;
 
     FirebaseDatabase database;
     DatabaseReference myRef;
-    RadioGroup rg_location;
+    RadioGroup rg_role;
 
     boolean fromProfile;
 
@@ -81,19 +83,19 @@ public class ProfileFill extends AppCompatActivity {
 
         temp = findViewById(R.id.temp);
 
-        getCurrentAddress();
+       // getCurrentAddress();
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        SharedPreferences prefs = this.getSharedPreferences("com.anngrynerds.ospproject", Context.MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
         fromProfile = getIntent().getBooleanExtra("fromProfile",false);
-        rg_location = findViewById(R.id.profile_rg_location);
+        rg_role = findViewById(R.id.profile_rg_role);
         ipl_number = findViewById(R.id.profile_ipl_mobile_number);
         ipl_name = findViewById(R.id.profile_ipl_name);
         ipl_address = findViewById(R.id.profile_ipl_address);
 
-        str_phno = prefs.getString("id", "");
+        str_phno = prefs.getString("id","");
         et_phno = findViewById(R.id.profile_mobile_number);
         et_address = findViewById(R.id.profile_address);
         et_name = findViewById(R.id.profile_name);
@@ -104,12 +106,13 @@ public class ProfileFill extends AppCompatActivity {
         dialog.setCancelable(false);
         pgMsg = dialog.findViewById(R.id.dialog_pgmsg);
 
+        Log.e(TAG, "onCreate: "+str_phno );
         et_phno.setText(str_phno);
         et_phno.setKeyListener(null);
 
-        rg_location.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.profile_rb_location_osmanabad) str_role = "farmer";
-            if (checkedId == R.id.profile_rb_location_Tuljapur) str_role = "customer";
+        rg_role.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.profile_rb_role_farmer) str_role = "farmer";
+            if (checkedId == R.id.profile_rb_role_customer) str_role = "customer";
         });
 
         if (!str_phno.isEmpty()) {
@@ -125,6 +128,12 @@ public class ProfileFill extends AppCompatActivity {
                             et_phno.setText(u.getMobNo());
                             et_address.setText(u.getAddress());
                             et_name.setText(u.getName());
+                            str_role = u.getRole();
+                            if(str_role.equalsIgnoreCase("farmer")){
+                                rg_role.check(R.id.profile_rb_role_farmer);
+                            }else {
+                                rg_role.check(R.id.profile_rb_role_customer);
+                            }
                         }
 
                     }
@@ -179,9 +188,10 @@ public class ProfileFill extends AppCompatActivity {
                 u.put("mobNo", str_phno);
                 u.put("address", str_address);
                 u.put("name", str_name);
-                u.put("location", str_role);
-                u.put("lat", lat);
-                u.put("lang", lang);
+                u.put("role", str_role);
+                u.put("lat", "lat");
+                u.put("lang", "longitude");
+                u.put("city", str_city);
 
 
                 myRef.child("users").child(str_phno).updateChildren(u).addOnCompleteListener(task -> {
@@ -262,12 +272,10 @@ public class ProfileFill extends AppCompatActivity {
                     .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
             lat = String.valueOf(location.getLatitude());
-            lang = String.valueOf(location.getLongitude());
+            longitude = String.valueOf(location.getLongitude());
 
             Geocoder gcd = new Geocoder(getBaseContext(),
                     Locale.getDefault());
-
-
 
             List<Address> addresses;
             try {
@@ -313,6 +321,9 @@ public class ProfileFill extends AppCompatActivity {
         dialog.show();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        btn_continue.callOnClick();
+    }
 
 }

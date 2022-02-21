@@ -127,7 +127,7 @@
                     android:textSize="@dimen/normalText" />
 
                 <RadioGroup
-                    android:id="@+id/profile_rg_location"
+                    android:id="@+id/profile_rg_role"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
@@ -135,7 +135,7 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/profile_rb_location_osmanabad"
+                        android:id="@+id/profile_rb_role_farmer"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"
@@ -146,7 +146,7 @@
                         />
 
                     <RadioButton
-                        android:id="@+id/profile_rb_location_Tuljapur"
+                        android:id="@+id/profile_rb_role_customer"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="15dp"

@@ -14,10 +14,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,13 +72,14 @@ public class ProfileFill extends AppCompatActivity {
     String str_role;
     String str_city;
 
+    Spinner spinner_citySelect;
     FirebaseDatabase database;
     DatabaseReference myRef;
     RadioGroup rg_role;
 
     boolean fromProfile;
-
     Dialog dialog;
+    String[] cities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +94,8 @@ public class ProfileFill extends AppCompatActivity {
         myRef = database.getReference();
         SharedPreferences prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
+        cities = getResources().getStringArray(R.array.cities);
+
         fromProfile = getIntent().getBooleanExtra("fromProfile",false);
         rg_role = findViewById(R.id.profile_rg_role);
         ipl_number = findViewById(R.id.profile_ipl_mobile_number);
@@ -101,12 +108,37 @@ public class ProfileFill extends AppCompatActivity {
         et_name = findViewById(R.id.profile_name);
         btn_continue = findViewById(R.id.profile_btn_continue);
 
+        spinner_citySelect = findViewById(R.id.profile_spinner_city);
+        spinner_citySelect.setPrompt("Select you are in");
+        spinner_citySelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                str_city = cities[position];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ArrayAdapter<String> spinnerAdapter
+                = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                cities
+                );
+        spinnerAdapter.setDropDownViewResource(
+                android.R.layout
+                        .simple_spinner_dropdown_item);
+        spinner_citySelect.setAdapter(spinnerAdapter);
+
         dialog = new Dialog(ProfileFill.this);
         dialog.setContentView(R.layout.dialog_transparent_loading);
         dialog.setCancelable(false);
         pgMsg = dialog.findViewById(R.id.dialog_pgmsg);
 
-        Log.e(TAG, "onCreate: "+str_phno );
+//        Log.e(TAG, "onCreate: "+str_phno );
         et_phno.setText(str_phno);
         et_phno.setKeyListener(null);
 
@@ -118,7 +150,7 @@ public class ProfileFill extends AppCompatActivity {
         if (!str_phno.isEmpty()) {
             showpg("Getting User Data, please wait");
 
-            myRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            myRef.child(str_role).child(str_city).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.child(str_phno).exists()) {
@@ -155,6 +187,7 @@ public class ProfileFill extends AppCompatActivity {
         btn_continue.setOnClickListener(v -> {
 
             showpg("Updating data, please wait");
+
             str_phno = et_phno.getText().toString();
             str_name = et_name.getText().toString();
             str_address = et_address.getText().toString();
@@ -176,13 +209,10 @@ public class ProfileFill extends AppCompatActivity {
                 ipl_address.setError("Address should be minimum of 10 characters");
                 et_address.requestFocus();
                 closepg();
-            } else {
+            } if(str_city.isEmpty()){
+                Snackbar.make(v,"Please Select City",BaseTransientBottomBar.LENGTH_LONG).show();
 
-//
-//                 String mobNo;
-//                 String address;
-//                 String name;
-//                 String location;
+            }else {
 
                 Map<String, Object> u = new HashMap<>();
                 u.put("mobNo", str_phno);

@@ -90,6 +90,14 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Spinner
+                    android:id="@+id/profile_spinner_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/spinner_select_city"
+                    />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/profile_ipl_address"
@@ -116,7 +124,6 @@
                         android:minLines="2" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <TextView
                     android:layout_width="match_parent"

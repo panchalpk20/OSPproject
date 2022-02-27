@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="4dp"
+    app:contentPadding="5dp"
+
+    >
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/post_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="date"
+            android:gravity="end"/>
+
+
+        <ProgressBar
+            android:id="@+id/post_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="#E64A19"
+            />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/post_image_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                />
+
+        </HorizontalScrollView>
+
+
+        <TextView
+            android:id="@+id/post_tv_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:text="Name"
+            android:background="@drawable/text_view_style"
+            android:textSize="@dimen/normalText"
+            android:gravity="center|start"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:layout_marginTop="6dp"
+            android:textColor="@color/textColor"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="6dp"
+            android:baselineAligned="false"
+            >
+
+            <TextView
+                android:id="@+id/post_tv_item_count"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:text="Qty"
+                android:background="@drawable/text_view_style"
+                android:textSize="@dimen/normalText"
+                android:gravity="center|start"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="3dp"
+                android:textColor="@color/textColor"
+                app:drawableEndCompat="@drawable/ic_kg" />
+
+
+
+            <TextView
+                android:id="@+id/post_tv_item_price"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:text="Cost"
+                android:background="@drawable/text_view_style"
+                android:textSize="@dimen/normalText"
+                android:gravity="center|start"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:layout_weight="1"
+                android:layout_marginStart="3dp"
+                android:textColor="@color/textColor"
+                app:drawableEndCompat="@drawable/ic_rskg" />
+
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/post_btn_buy"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="6dp"
+            android:text="Buy"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@color/buttonBackground"
+            />
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -4,27 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.login.ProfileFill;
 import com.anngrynerds.ospproject.pojo.User;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 
 public class ProfileFragment extends Fragment {
@@ -76,7 +71,7 @@ public class ProfileFragment extends Fragment {
         SharedPreferences prefs = this.requireActivity().getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
         str_phno = prefs.getString("id", "");
 
-        if (!str_phno.isEmpty()) {
+        /*if (!str_phno.isEmpty()) {
             pg.setVisibility(View.VISIBLE);
             myRef.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -102,7 +97,17 @@ public class ProfileFragment extends Fragment {
                     pg.setVisibility(View.INVISIBLE);
                 }
             });
-        }
+        }*/
+
+
+        Gson gson = new Gson();
+        String json1 = prefs.getString(Constantss.sharedPrefUserKey, "");
+        User user = gson.fromJson(json1, User.class);
+
+        tv_name.setText(user.getName());
+        tv_address.setText(user.getAddress());
+        tv_mobileNo.setText(user.getMobNo());
+
 
 
         view.findViewById(R.id.profile_page_btn_).setOnClickListener(v -> {

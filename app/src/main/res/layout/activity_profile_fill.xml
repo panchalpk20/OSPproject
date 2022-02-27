@@ -52,7 +52,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/enter_your_name"
+                    android:hint="@string/name"
                     app:boxStrokeColor="@color/seperator"
                     app:boxStrokeErrorColor="@color/error"
                     app:errorTextColor="@color/error"

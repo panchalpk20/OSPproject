@@ -41,15 +41,16 @@ public class HomeActivity extends AppCompatActivity {
 
             // feed
 
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.main_activity_frame_layout, new MenuFragment())
-//                    .commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_activity_frame_layout, FeedFragment.newInstance())
+                    .commit();
 
         }
 
 
 
+        bottomNavigationView.setSelectedItemId(R.id.bottom_menu_show_feed);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.bottom_menu_profile) {

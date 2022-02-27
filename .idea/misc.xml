@@ -4,17 +4,22 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/edit_border.xml" value="0.18981481481481483" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_kg.xml" value="0.2203125" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_otp.xml" value="0.15462962962962962" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_rskg.xml" value="0.2203125" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_user.xml" value="0.15462962962962962" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/navicon_itembg.xml" value="0.15462962962962962" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/radio_loc_selected.xml" value="0.2203125" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/style_tv.xml" value="0.18981481481481483" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/text_view_style.xml" value="0.2203125" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_home.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_login.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_profile_fill.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_add_post.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_transparent_loading.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_feed.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_profile.xml" value="0.18" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_post.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.20416666666666666" />
       </map>
     </option>

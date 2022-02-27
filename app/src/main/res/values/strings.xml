@@ -18,7 +18,7 @@
     <string name="edit_profile">Edit profile</string>
     <string name="blank">"  "</string>
     <string name="fill_profile">Fill Profile</string>
-    <string name="enter_your_name">Enter Name</string>
+    <string name="name">Name</string>
     <string name="hint_address">address</string>
     <string name="registeringas">"Registering as "</string>
     <string name="farmer">farmer</string>
@@ -26,6 +26,10 @@
     <string name="stringcontinue">Save</string>
     <string name="add_post">Add Post</string>
     <string name="select_your_city">Select Your city</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="quantity">Quantity in kg</string>
+    <string name="price">Price in Rs per KG</string>
+    <string name="post">Post</string>
 
 
     <string-array name="cities">

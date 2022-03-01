@@ -89,4 +89,17 @@ public class PostObject {
     public void setPost_id(String post_id) {
         this.post_id = post_id;
     }
+
+    @Override
+    public String toString() {
+        return "PostObject{" +
+                "item_name='" + item_name + '\'' +
+                ", item_qty='" + item_qty + '\'' +
+                ", item_price='" + item_price + '\'' +
+                ", filePathList=" + filePathList +
+                ", date='" + date + '\'' +
+                ", mobno='" + mobno + '\'' +
+                ", post_id='" + post_id + '\'' +
+                '}';
+    }
 }

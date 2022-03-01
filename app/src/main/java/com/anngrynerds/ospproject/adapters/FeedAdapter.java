@@ -27,27 +27,33 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 
-public class FeedAdapter extends FirebaseRecyclerAdapter<
-        PostObject, FeedAdapter.ViewHolder> {
-    /**
-     * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
-     * {@link FirebaseRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+import java.util.ArrayList;
+
+public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     Context context;
-    public FeedAdapter(@NonNull FirebaseRecyclerOptions<PostObject> options, Context context) {
-        super(options);
+    ArrayList<PostObject> list = new ArrayList<>();
+
+
+    public FeedAdapter(ArrayList<PostObject> list, Context context) {
+        this.list = list;
         this.context = context;
     }
 
+    @NonNull
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull PostObject model) {
-            //todo
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view
+                = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_post, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        PostObject model = list.get(position);
 
         holder.tv_date.setText(model.getDate());
         holder.tv_name.setText(model.getItem_name());
@@ -107,16 +113,11 @@ public class FeedAdapter extends FirebaseRecyclerAdapter<
 
 
         }
-
     }
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view
-                = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_post, parent, false);
-        return new ViewHolder(view);
+    public int getItemCount() {
+        return list.isEmpty()? 0 : list.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

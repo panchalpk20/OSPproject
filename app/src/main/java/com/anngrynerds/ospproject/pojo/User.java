@@ -10,7 +10,7 @@ public class User {
     String role;
     String city;
 
-    public User(){};
+    public User(){}
 
     public User(String mobNo, String address, String name, String lat, String lang, String role, String city) {
         this.mobNo = mobNo;

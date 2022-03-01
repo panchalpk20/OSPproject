@@ -9,19 +9,24 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,12 +36,14 @@ import com.anngrynerds.ospproject.adapters.FeedAdapter;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.pojo.PostObject;
 import com.anngrynerds.ospproject.pojo.User;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
@@ -51,9 +58,6 @@ import java.util.UUID;
 
 public class FeedFragment extends Fragment {
 
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final String TAG = "FeedFragment";
     BottomSheetDialog bottomSheetDialog;
     LinearLayout bs_imageContainer;
@@ -68,6 +72,11 @@ public class FeedFragment extends Fragment {
     StorageReference storageReference;
     RecyclerView rc;
     FeedAdapter adapter;
+    EditText et_searchQry;
+    Button btn_search;
+    DatabaseReference ref;
+    ArrayList<PostObject> list = new ArrayList<>();
+    TextView searchDesc;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -145,7 +154,13 @@ public class FeedFragment extends Fragment {
                 });
         fab_addPost = view.findViewById(R.id.fragment_feed_fb_add_post);
 
-        if(user.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)){
+        et_searchQry = view.findViewById(R.id.feed_et_searchqry);
+        btn_search = view.findViewById(R.id.btn_search);
+
+        searchDesc = view.findViewById(R.id.feed_t_searchdesc);
+        searchDesc.setVisibility(View.GONE);
+
+        if (user.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)) {
             //hiding add post button if current user is customer
             fab_addPost.setVisibility(View.INVISIBLE);
         }
@@ -155,6 +170,26 @@ public class FeedFragment extends Fragment {
         });
 
 
+        et_searchQry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                fireBaseSearch(s.toString());
+
+            }
+        });
+
+
+
         //recyclerView
         rc = view.findViewById(R.id.fragment_feed_rc);
 
@@ -162,21 +197,76 @@ public class FeedFragment extends Fragment {
                 new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference()
-                .child(user.getCity())
-                .child(Constantss.postsNode);
+        ref = FirebaseDatabase.getInstance()
+                .getReference();
 
-        FirebaseRecyclerOptions<PostObject> options
-                = new FirebaseRecyclerOptions.Builder<PostObject>()
-                .setQuery(ref, PostObject.class)
-                .build();
+        adapter = new FeedAdapter(list, context);
 
-        adapter = new FeedAdapter(options, context);
+
+
+        Log.e(TAG, "onCreateView: " + user.getCity());
+
+        ref.child(user.getCity()).child(Constantss.postsNode).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
+
+                list.clear();
+
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    PostObject postObj = s.getValue(PostObject.class);
+                    list.add(postObj);
+//                    Log.e(TAG, "onDataChange: " + s.toString());
+
+                }
+                adapter.notifyDataSetChanged();
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
         rc.setAdapter(adapter);
 
         return view;
     }
+
+    private void fireBaseSearch(String searchWord) {
+
+        ref.child(user.getCity()).child(Constantss.postsNode).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+               // Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
+
+                list.clear();
+
+                for (DataSnapshot s : snapshot.getChildren()) {
+                    PostObject postObj = s.getValue(PostObject.class);
+                    if (postObj.getItem_name().contains(searchWord))
+                        list.add(postObj);
+//                    Log.e(TAG, "onDataChange: " + s.toString());
+
+                }
+                adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
 
     private void initUserObject() {
 
@@ -291,9 +381,8 @@ public class FeedFragment extends Fragment {
                                 //uploaded image getting download uri
                                 storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                                     downloadUrl.add(uri.toString());
-                                   // Log.e(TAG, "createPost: "+downloadUrl );
+                                    // Log.e(TAG, "createPost: "+downloadUrl );
                                     bs_progressBar.setVisibility(View.INVISIBLE);
-
 
 
                                     Log.e(TAG, "Download URL: " + downloadUrl.toString());
@@ -303,7 +392,7 @@ public class FeedFragment extends Fragment {
                                     Date c = Calendar.getInstance().getTime();
                                     SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.getDefault());
                                     String code = df.format(c);
-                                    String post_id = user.getMobNo()+"-"+ code;
+                                    String post_id = user.getMobNo() + "-" + code;
                                     databaseReference.child(user.getCity()).
                                             child(Constantss.postsNode)
                                             .child(post_id)
@@ -318,7 +407,7 @@ public class FeedFragment extends Fragment {
                                             ))
                                             .addOnCompleteListener(task -> {
 
-                                                if(task.isSuccessful()){
+                                                if (task.isSuccessful()) {
                                                     bs_progressBar.setVisibility(View.VISIBLE);
                                                     bottomSheetDialog.dismiss();
                                                     Toast
@@ -327,16 +416,16 @@ public class FeedFragment extends Fragment {
                                                                     Toast.LENGTH_SHORT)
                                                             .show();
 
-                                                }else {
+                                                } else {
                                                     bs_progressBar.setVisibility(View.VISIBLE);
                                                     //bottomSheetDialog.dismiss();
                                                     Toast
                                                             .makeText(context,
-                                                                    "Unable to create post "+task.getException().getMessage(),
+                                                                    "Unable to create post " + task.getException().getMessage(),
                                                                     Toast.LENGTH_SHORT)
                                                             .show();
 
-                                                    Log.e(TAG, "createPost: "+task.getException().getMessage());
+                                                    Log.e(TAG, "createPost: " + task.getException().getMessage());
                                                 }
 
                                                 //todo
@@ -345,9 +434,6 @@ public class FeedFragment extends Fragment {
 
 
                                 });
-
-
-
 
 
                             })
@@ -365,18 +451,6 @@ public class FeedFragment extends Fragment {
         }
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        adapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        adapter.stopListening();
-    }
 
     private void selectImage() {
 

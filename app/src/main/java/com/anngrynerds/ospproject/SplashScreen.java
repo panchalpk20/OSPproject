@@ -97,7 +97,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         }).setNegativeButton("No", (dialog, which) -> dialog.cancel());
         final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+     //   alertDialog.show();
     }
 
 

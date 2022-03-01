@@ -30,6 +30,7 @@
     <string name="quantity">Quantity in kg</string>
     <string name="price">Price in Rs per KG</string>
     <string name="post">Post</string>
+    <string name="type_here_to_search">Type here to search...</string>
 
 
     <string-array name="cities">

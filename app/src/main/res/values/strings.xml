@@ -30,7 +30,13 @@
     <string name="quantity">Quantity in kg</string>
     <string name="price">Price in Rs per KG</string>
     <string name="post">Post</string>
-    <string name="type_here_to_search">Type here to search...</string>
+    <string name="type_here_to_search">Type here to search…</string>
+    <string name="replace_pictures">Replace Pictures</string>
+    <string name="update">Update</string>
+    <string name="stock_left">Stock left in(KG)</string>
+    <string name="price_per_kg">Price (per KG)</string>
+    <string name="place_order">Place Order</string>
+    <string name="add_to_basket">Add to Basket</string>
 
 
     <string-array name="cities">

@@ -3,6 +3,7 @@ package com.anngrynerds.ospproject.constants;
 public class Constantss {
 
     public static final String ROLE_CUSTOMER = "Customer";
+    public static final String ROLE_FARMER = "farmer";
     public static String sharedPrefID = "com.anngrynerds.ospproject.home";
     public static String sharedPrefUserKey = "UserData";
 

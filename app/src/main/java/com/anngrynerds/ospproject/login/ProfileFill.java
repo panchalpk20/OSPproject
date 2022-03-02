@@ -157,42 +157,6 @@ public class ProfileFill extends AppCompatActivity {
 
         }
 
-        /*if (!str_phno.isEmpty()) {
-            showpg("Getting User Data, please wait");
-
-            myRef.child(str_role).child(str_city).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.child(str_phno).exists()) {
-
-                        User u = snapshot.child(str_phno).getValue(User.class);
-                        if (u != null) {
-                            et_phno.setText(u.getMobNo());
-                            et_address.setText(u.getAddress());
-                            et_name.setText(u.getName());
-                            str_role = u.getRole();
-                            if(str_role.equalsIgnoreCase("farmer")){
-                                rg_role.check(R.id.profile_rb_role_farmer);
-                            }else {
-                                rg_role.check(R.id.profile_rb_role_customer);
-                            }
-                        }
-
-                    }
-                    closepg();
-
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(ProfileFill.this, "Error retrieving data", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, ""+error.getDetails() );
-                    closepg();
-
-                }
-            });
-
-        }*/
 
         btn_continue.setOnClickListener(v -> {
 

@@ -10,12 +10,17 @@
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_user.xml" value="0.15462962962962962" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/navicon_itembg.xml" value="0.15462962962962962" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/radio_loc_selected.xml" value="0.2203125" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/style_btn_addtobasket.xml" value="0.1635" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/style_btn_incdec.xml" value="0.1635" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/style_btn_placeorder.xml" value="0.1635" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/style_tv.xml" value="0.18981481481481483" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/text_view_style.xml" value="0.2203125" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_home.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_login.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_profile_fill.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_add_post.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_buy.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_edit_post.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_transparent_loading.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_feed.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_profile.xml" value="0.18" />

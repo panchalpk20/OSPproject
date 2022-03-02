@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    >
+
+
+    <TextView
+        android:id="@+id/bs_buy_tv_soldby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sold by ..."
+        android:textSize="@dimen/normalText"
+        android:textColor="@color/textColor"
+
+        />
+
+    <TextView
+        android:id="@+id/bs_buy_tv_itemname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Item Name"
+        android:textSize="22sp"
+        android:textColor="@color/textColor"/>
+
+
+    <ProgressBar
+        android:id="@+id/bs_buy_pg"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/bs_buy_imagecontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            />
+
+    </HorizontalScrollView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        >
+
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:background="@drawable/style_tv"
+                android:layout_marginEnd="3dp"
+                android:padding="4dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stock_left"
+                    android:textSize="@dimen/small_text"
+                    android:textColor="@color/textColor"
+                    />
+
+                <TextView
+                    android:id="@+id/bs_buy_tv_itemqty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="name"
+                    android:text="stock"
+                    android:textSize="@dimen/normalText"
+                    android:textColor="@color/textColor"
+                    app:drawableEndCompat="@drawable/ic_kg" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:background="@drawable/style_tv"
+                android:layout_marginStart="3dp"
+                android:padding="4dp"
+                >
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/price_per_kg"
+                    android:textSize="@dimen/small_text"
+                    android:textColor="@color/textColor"
+                    />
+
+                <TextView
+                    android:id="@+id/bs_buy_tv_itemprice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="name"
+                    android:text="price/kg"
+                    android:textSize="@dimen/normalText"
+                    android:textColor="@color/textColor"
+                    app:drawableEndCompat="@drawable/ic_rskg" />
+
+            </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bs_buy_btn_dec"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/style_btn_incdec"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/bs_buy_tv_buyqty"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="1"
+            android:textStyle="bold"
+            android:textColor="@color/textColor"
+            android:textSize="22sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bs_buy_btn_inc"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/style_btn_incdec"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="28dp"
+        android:orientation="horizontal"
+        >
+
+
+<!--        todo add icons for buttons-->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bs_buy_btn_addtocart"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/style_btn_addtobasket"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:text="@string/add_to_basket"
+            android:textAllCaps="false"
+            android:textColor="@color/textColor"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bs_buy_btn_buy"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/bs_buy_btn_addtocart"
+            android:background="@drawable/style_btn_placeorder"
+            android:text="@string/place_order"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

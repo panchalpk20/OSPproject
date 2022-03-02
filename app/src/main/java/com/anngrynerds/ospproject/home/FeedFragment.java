@@ -117,10 +117,12 @@ public class FeedFragment extends Fragment {
                                 Uri uri = item.getUri();
                                 filePath.add(uri.toString());
 
-                                Log.e(TAG, "FilePath " + filePath.toString());
+                                //Log.e(TAG, "FilePath " + filePath.toString());
 
                                 Bitmap bitmap = null;
+
                                 //Log.e(TAG, "onCreateView: " + filePath.toString());
+
                                 try {
                                     bitmap = MediaStore
                                             .Images
@@ -200,17 +202,15 @@ public class FeedFragment extends Fragment {
         ref = FirebaseDatabase.getInstance()
                 .getReference();
 
-        adapter = new FeedAdapter(list, context);
+        adapter = new FeedAdapter(list, context, false);
 
-
-
-        Log.e(TAG, "onCreateView: " + user.getCity());
+       // Log.e(TAG, "onCreateView: " + user.getCity());
 
         ref.child(user.getCity()).child(Constantss.postsNode).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
+       //         Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
 
                 list.clear();
 

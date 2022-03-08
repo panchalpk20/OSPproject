@@ -8,11 +8,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
@@ -33,6 +34,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
     SharedPreferences pref;
     Gson gson;
 
+    Fragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,21 +51,21 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setItemIconTintList(null);
 
-        try {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_NETWORK_STATE
-                }, 101);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
+        if (ContextCompat.checkSelfPermission(HomeActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(HomeActivity.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            askForLocationPermissions();
+        } else {
+            
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
         }
 
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3000000, 0, this);
-
+       
         if (getIntent().getBooleanExtra("toProfile", false)) {
 
             getSupportFragmentManager()
@@ -117,10 +119,17 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
             }else if (item.getItemId() == R.id.bottom_menu_show_feed) {
 
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_activity_frame_layout, FeedFragment.newInstance())
-                        .commit();
+                if(u.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)){
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_activity_frame_layout, FeedFragment.newInstance())
+                            .commit();
+                }else{
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.main_activity_frame_layout, FarmerFeedFragment.newInstance())
+                            .commit();
+                }
 
                 return true;
 
@@ -130,6 +139,40 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
         });
 
 
+
+    }
+
+    private void askForLocationPermissions() {
+
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Location permissions needed")
+                    .setMessage("you need to allow this permission!")
+                    .setPositiveButton("Sure", (dialog, which) -> ActivityCompat.requestPermissions(HomeActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            101))
+                    .setNegativeButton("Not now", (dialog, which) -> {
+//                                        //Do nothing
+
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                101);
+
+
+                    })
+                    .show();
+
+        } else {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
+
+
+        }
 
     }
 
@@ -165,7 +208,7 @@ public class HomeActivity extends AppCompatActivity implements LocationListener 
 
         latitude = String.valueOf(location.getLatitude());
         longitude = String.valueOf(location.getLongitude());
-        Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
+     //   Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
         updateCoordinatesInDatabasee(latitude, longitude);
 
     }

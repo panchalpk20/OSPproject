@@ -50,6 +50,13 @@
             app:drawableEndCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 
+        <CheckBox
+            android:id="@+id/feed_checkbox_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sort by distance"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_feed_rc"
             android:layout_width="match_parent"
@@ -58,16 +65,5 @@
 
 
     </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fragment_feed_fb_add_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:contentDescription="@string/add_post"
-        android:text="@string/add_post"
-        app:icon="@android:drawable/ic_input_add"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

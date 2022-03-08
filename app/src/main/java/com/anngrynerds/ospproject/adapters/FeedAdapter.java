@@ -78,67 +78,73 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         holder.imageViewContainer.removeAllViews();
 
-        holder.pg.setVisibility(View.VISIBLE);
-        for (String url : model.getFilePathList()) {
-
-            Log.e("feedAdp: ", "url: " + url);
-
-
-            ImageView imageView = new ImageView(context);
-            Glide.with(context)
-                    .load(url)
-                    .addListener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e,
-                                                    Object model, Target<Drawable> target,
-                                                    boolean isFirstResource) {
-                            holder.pg.setVisibility(View.GONE);
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource,
-                                                       Object model,
-                                                       Target<Drawable> target,
-                                                       DataSource dataSource,
-                                                       boolean isFirstResource) {
-
-                            holder.pg.setVisibility(View.GONE);
-                            return false;
-                        }
-                    })
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .transition(withCrossFade())
-                    .thumbnail(Glide.with(context)
-                            .load(url)
-                            .override(2))
-                    .error(R.drawable.ic_launcher_foreground)
-                    .into(imageView);
-
-            ViewGroup.LayoutParams params = holder.imageViewContainer.getLayoutParams();
-            params.height = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    200,
-                    context.getResources().getDisplayMetrics());
-            params.width = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    400,
-                    context.getResources().getDisplayMetrics());
-
-            imageView.setLayoutParams(params);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.imageViewContainer.addView(imageView);
+        if(model.getDistance().isEmpty()){
+            holder.tv_distance.setVisibility(View.GONE);
+        }else{
+            int d = (int) Math.ceil(Float.parseFloat(model.getDistance()));
+            holder.tv_distance.setText(MessageFormat.format("{0}M away from you", d));
         }
 
+
+        holder.pg.setVisibility(View.VISIBLE);
+            for (String url : model.getFilePathList()) {
+
+                Log.e("feedAdp: ", "url: " + url);
+
+
+                ImageView imageView = new ImageView(context);
+                Glide.with(context)
+                        .load(url)
+                        .addListener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e,
+                                                        Object model, Target<Drawable> target,
+                                                        boolean isFirstResource) {
+                                holder.pg.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Drawable resource,
+                                                           Object model,
+                                                           Target<Drawable> target,
+                                                           DataSource dataSource,
+                                                           boolean isFirstResource) {
+
+                                holder.pg.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .transition(withCrossFade())
+                        .thumbnail(Glide.with(context)
+                                .load(url)
+                                .override(2))
+                        .error(R.drawable.ic_launcher_foreground)
+                        .into(imageView);
+
+                ViewGroup.LayoutParams params = holder.imageViewContainer.getLayoutParams();
+                params.height = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        200,
+                        context.getResources().getDisplayMetrics());
+                params.width = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        400,
+                        context.getResources().getDisplayMetrics());
+
+                imageView.setLayoutParams(params);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder.imageViewContainer.addView(imageView);
+            }
 
 
         Log.e(TAG, "onBindViewHolder: " + isFarmer);
         if (isFarmer) {
             holder.btn_buy.setText("Delete Post");
             holder.btn_buy.setOnClickListener(v -> {
-                //todo implement edit post
+                //implement delete post
                 int newPosition = holder.getAdapterPosition();
-
                 list.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(newPosition, list.size());
@@ -151,10 +157,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 //todo implement buy
 
                 User u = fetchUserForPost(model);
-
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
                 bottomSheetDialog.setContentView(R.layout.bottom_sheet_buy);
-
 
                 TextView bs_tv_soldby = bottomSheetDialog.findViewById(R.id.bs_buy_tv_soldby);
                 TextView bs_tv_itemName = bottomSheetDialog.findViewById(R.id.bs_buy_tv_itemname);
@@ -275,7 +279,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
 
-
     }
 
     private User fetchUserForPost(PostObject model) {
@@ -320,6 +323,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         public LinearLayout imageViewContainer;
         public Button btn_buy;
         public ProgressBar pg;
+        public TextView tv_distance;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -328,6 +332,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             tv_qty = itemView.findViewById(R.id.post_tv_item_count);
             tv_cost = itemView.findViewById(R.id.post_tv_item_price);
             tv_date = itemView.findViewById(R.id.post_date);
+            tv_distance = itemView.findViewById(R.id.post_distance);
 
             imageViewContainer = itemView.findViewById(R.id.post_image_container);
 

@@ -89,9 +89,12 @@ public class ProfileFragment extends Fragment {
         SharedPreferences prefs = this.requireActivity().getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
         str_phno = prefs.getString("id", "");
 
+        btn_edit = view.findViewById(R.id.profile_page_btn_edit);
+
         Gson gson = new Gson();
         String json1 = prefs.getString(Constantss.sharedPrefUserKey, "");
         user = gson.fromJson(json1, User.class);
+        btn_edit.setText(user.getRole());
 
         tv_name.setText(user.getName());
         tv_address.setText(user.getAddress());
@@ -102,9 +105,9 @@ public class ProfileFragment extends Fragment {
         rc.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
 
-        if(user.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)){
+        if (user.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)) {
             postsContainer.setVisibility(View.GONE);
-        }else{
+        } else {
             loadFarmerPosts();
         }
 
@@ -127,32 +130,32 @@ public class ProfileFragment extends Fragment {
         myRef.child(user.getCity())
                 .child(Constantss.postsNode)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-             //   Log.e(TAG, "loading farmers posts: "+snapshot.getChildrenCount() );
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        //   Log.e(TAG, "loading farmers posts: "+snapshot.getChildrenCount() );
+                        list.clear();
+                        for (DataSnapshot s : snapshot.getChildren()) {
+                            Log.e(TAG, "Feed" + s.toString());
+                            PostObject p = s.getValue(PostObject.class);
+                                if (p != null)
+                                    if (p.getFilePathList() != null)
+                                        if (p.getPost_id().split("-")[0].equalsIgnoreCase(user.getMobNo())) {
+                                        // Log.e(TAG, "My " + p.toString() );
+                                        list.add(p);
+                                    }
 
-                for (DataSnapshot s: snapshot.getChildren()){
-                    Log.e(TAG, "Feed" + s.toString() );
-                    PostObject p = s.getValue(PostObject.class);
-                    if(p!=null)
-                    if(p.getPost_id().split("-")[0].equalsIgnoreCase(user.getMobNo())){
-                       // Log.e(TAG, "My " + p.toString() );
-                        list.add(p);
+                        }
+
+                        adapter = new FeedAdapter(list, context, true);
+                        rc.setAdapter(adapter);
+
                     }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                adapter = new FeedAdapter(list,context, true);
-                rc.setAdapter(adapter);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
+                    }
+                });
 
 
     }

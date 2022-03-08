@@ -2,7 +2,9 @@
 <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="5dp"
+    >
 
 
     <LinearLayout android:layout_width="match_parent"
@@ -40,6 +42,9 @@
             android:text="@string/upload_image"
             android:id="@+id/bs_post_btn_uploadImage"
             android:layout_marginTop="10dp"
+            android:background="@color/buttonBackground2"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
             />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -131,6 +136,10 @@
             android:layout_height="wrap_content"
             android:text="@string/post"
             android:layout_marginTop="10dp"
+            android:background="@color/buttonBackground"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:textSize="@dimen/normalText"
             />
 
 

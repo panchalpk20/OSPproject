@@ -11,6 +11,9 @@ public class PostObject {
     String date;
     String mobno;
     String post_id;
+    String lat;
+    String lang;
+    String distance;
 
     public PostObject(
             String str_item_name,
@@ -19,7 +22,11 @@ public class PostObject {
             ArrayList<String> filePathList,
             String str_date,
             String str_mobno,
-            String post_id) {
+            String post_id,
+            String lat,
+            String lang,
+            String distance
+            ) {
 
 
          this.item_name = str_item_name;
@@ -29,9 +36,37 @@ public class PostObject {
          this.date = str_date;
          this.mobno = str_mobno;
          this.post_id = post_id;
+         this.lat = lat;
+         this.lang = lang;
+         this.distance = distance;
+    }
+
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public PostObject() {
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public String getItem_name() {

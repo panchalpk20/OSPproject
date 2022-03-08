@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".login.ProfileFill"
     android:orientation="vertical"
+    android:background="@color/lightBackground"
     >
 
     <TextView
@@ -13,7 +14,9 @@
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:text="somtjhing"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 
 
     <androidx.cardview.widget.CardView

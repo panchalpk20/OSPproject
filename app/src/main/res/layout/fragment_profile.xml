@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightBackground"
-
+    android:orientation="vertical"
     >
 
 
@@ -27,7 +27,7 @@
             android:padding="10dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="10dp"
             >
 
                 <LinearLayout
@@ -54,7 +54,7 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="65dp"
+                        android:layout_marginTop="12dp"
                         android:indeterminate="true"
                         android:visibility="invisible"
                         app:layout_constraintBottom_toTopOf="parent"
@@ -166,4 +166,4 @@
     </LinearLayout>
 
 
-</ScrollView>
+</LinearLayout>

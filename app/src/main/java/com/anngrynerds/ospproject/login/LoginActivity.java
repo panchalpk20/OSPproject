@@ -1,16 +1,10 @@
 package com.anngrynerds.ospproject.login;
 
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,10 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.databinding.ActivityLoginBinding;
-import com.anngrynerds.ospproject.home.HomeActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -161,7 +158,12 @@ public class LoginActivity extends AppCompatActivity {
                                         closepg();
 
                                         if(task.isSuccessful()){
-                                            Intent i = new Intent(context, HomeActivity.class);
+                                            user = Objects.requireNonNull(task.getResult()).getUser();
+                                            SharedPreferences.Editor editor = prefs.edit();
+                                            editor.putString("id", user.getPhoneNumber());
+                                            editor.apply();
+
+                                            Intent i = new Intent(context, ProfileFill.class);
                                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(i);
                                         }else{

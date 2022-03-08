@@ -54,7 +54,7 @@ public class ProfileFill extends AppCompatActivity {
     String str_phno;
     String str_name;
     String str_address;
-    String str_role;
+    String str_role= "";
     String str_city;
 
     Spinner spinner_citySelect;
@@ -82,22 +82,30 @@ public class ProfileFill extends AppCompatActivity {
         SharedPreferences prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
         cities = getResources().getStringArray(R.array.cities);
 
-        str_lat = prefs.getString(Constantss.STR_Latitude, "");
-        str_long = prefs.getString(Constantss.STR_Longitude, "");
+        str_lat = prefs.getString("Latitude", "");
+        str_long = prefs.getString("Longitude", "");
         str_phno = prefs.getString("id", "");
 
         fromProfile = getIntent().getBooleanExtra("fromProfile", false);
+
+
         rg_role = findViewById(R.id.profile_rg_role);
         ipl_number = findViewById(R.id.profile_ipl_mobile_number);
         ipl_name = findViewById(R.id.profile_ipl_name);
         ipl_address = findViewById(R.id.profile_ipl_address);
 
-        str_phno = prefs.getString("id", "");
         et_phno = findViewById(R.id.profile_mobile_number);
         et_address = findViewById(R.id.profile_address);
         et_name = findViewById(R.id.profile_name);
         btn_continue = findViewById(R.id.profile_btn_continue);
 
+        et_phno.setText(str_phno);
+
+        if(fromProfile){
+
+            //todo uncomment following line
+//            rg_role.setVisibility(View.GONE);
+        }
         spinner_citySelect = findViewById(R.id.profile_spinner_city);
         spinner_citySelect.setPrompt("Select you are in");
         spinner_citySelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -184,6 +192,11 @@ public class ProfileFill extends AppCompatActivity {
                 closepg();
             } else if (str_city.isEmpty()) {
                 Snackbar.make(v, "Please Select City", BaseTransientBottomBar.LENGTH_LONG).show();
+                closepg();
+
+            } else if (str_role.isEmpty()) {
+                Snackbar.make(v, "Please Select Role", BaseTransientBottomBar.LENGTH_LONG).show();
+                closepg();
 
             } else {
 
@@ -202,13 +215,14 @@ public class ProfileFill extends AppCompatActivity {
 
                         Snackbar.make(v, "Data Updated", BaseTransientBottomBar.LENGTH_SHORT).show();
 
-                        //todo add u in sharedPref
                         SharedPreferences.Editor editor = prefs.edit();
                         JsonElement jsonElement = gson.toJsonTree(u);
                         User user = gson.fromJson(jsonElement, User.class);
                         String json = gson.toJson(user);
                         editor.putString(Constantss.sharedPrefUserKey, json);
                         editor.apply();
+
+                        closepg();
 
                         Intent i = new Intent(ProfileFill.this, HomeActivity.class);
                         if (fromProfile) {

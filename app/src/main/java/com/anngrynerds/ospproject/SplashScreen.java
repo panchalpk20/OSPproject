@@ -1,25 +1,34 @@
 package com.anngrynerds.ospproject;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.anngrynerds.ospproject.login.LoginActivity;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
 
 @SuppressLint("CustomSplashScreen")
-public class SplashScreen extends AppCompatActivity  {
-
+public class SplashScreen extends AppCompatActivity{
     SharedPreferences prefs;
     String longitude;
     String latitude;
     String phno;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,102 +38,127 @@ public class SplashScreen extends AppCompatActivity  {
         prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
         phno = prefs.getString("id", "");
+        FusedLocationProviderClient fusedLocationClient
+                = LocationServices.getFusedLocationProviderClient(this);
 
 
-
-
-
-        //checkIfGPSisOn();
-
-        if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
-
-            //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(SplashScreen.this, HomeActivity.class));
-
+        if (ContextCompat.checkSelfPermission(SplashScreen.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(SplashScreen.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            askForLocationPermissions();
         } else {
-            startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, location -> {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            latitude = String.valueOf(location.getLatitude());
+                            longitude = String.valueOf(location.getLongitude());
+                            Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
+                            SharedPreferences.Editor prefsEditor = prefs.edit();
+                            prefsEditor.putString(Constantss.STR_Longitude, longitude + "");
+                            prefsEditor.putString(Constantss.STR_Latitude, latitude + "");
+                            prefsEditor.apply();
+
+                            if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
+                                //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+
+                            } else {
+                                startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                            }
+
+                            finish();
+                        }
+                    });
         }
 
-        finish();
+
+        /*if (ContextCompat.checkSelfPermission(SplashScreen.this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                &&
+                ContextCompat.checkSelfPermission(SplashScreen.this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            askForLocationPermissions();
+        } else {
+
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+                Toast.makeText(SplashScreen.this,
+                        "Please Enable Location",
+                        Toast.LENGTH_SHORT).show();
+            }
+            locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER,
+                    10, 90000, new LocationListener() {
+                        @Override
+                        public void onLocationChanged(@NonNull Location location) {
+                            latitude = String.valueOf(location.getLatitude());
+                            longitude = String.valueOf(location.getLongitude());
+                            Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
+                            SharedPreferences.Editor prefsEditor = prefs.edit();
+                            prefsEditor.putString(Constantss.STR_Longitude, longitude + "");
+                            prefsEditor.putString(Constantss.STR_Latitude, latitude + "");
+                            prefsEditor.apply();
+
+                            if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
+                                //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+
+                            } else {
+                                startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                            }
+
+                            finish();
+
+                        }
+                    });
+        }*/
+
+
 
 
     }
 
-    /*private void checkIfGPSisOn() {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-
-            Log.e("Location ", "No GPS");
-            OnGPS();
-        } else {
-            Log.e("Location ", "GPS");
-            getLocation();
-        }
-    }
-
-    private void OnGPS() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-
-                checkIfGPSisOn();
-            }
-        }).setNegativeButton("No", (dialog, which) -> dialog.cancel());
-        final AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
 
 
-    private void getLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                SplashScreen.this,Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                SplashScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 101);
+    private void askForLocationPermissions() {
 
-            Log.e("Location ", "here 1");
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Location permissions needed")
+                    .setMessage("you need to allow this permission!")
+                    .setPositiveButton("Sure", (dialog, which) ->
+                            ActivityCompat.requestPermissions(SplashScreen.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            101))
+                    .setNegativeButton("Not now", (dialog, which) -> {
+//                                        //Do nothing
+
+                        ActivityCompat.requestPermissions(this,
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                101);
+
+
+                    })
+                    .show();
 
         } else {
 
-            Log.e("Location ", "here 2");
-            List<String> providers = locationManager.getProviders(true);
-            Location bestLocation = null;
-            for (String provider : providers) {
-                Location l = locationManager.getLastKnownLocation(provider);
-                if (l == null) {
-                    continue;
-                }
-                if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                    bestLocation = l;
-                }
-            }
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    101);
 
-            Log.e("Location ", bestLocation != null ? bestLocation.toString() : "null");
-            
-            if (bestLocation != null) {
-                latitude = String.valueOf(bestLocation.getLatitude());
-                longitude = String.valueOf(bestLocation.getLongitude());
-                Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
-
-
-                SharedPreferences locationpref = getApplication()
-                        .getSharedPreferences(Constantss.sharedPrefID, MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = locationpref.edit();
-                prefsEditor.putString(Constantss.STR_Longitude, longitude + "");
-                prefsEditor.putString(Constantss.STR_Latitude, latitude + "");
-                prefsEditor.apply();
-
-
-            }
 
         }
-    }*/
 
-
-
-
-
+    }
 }

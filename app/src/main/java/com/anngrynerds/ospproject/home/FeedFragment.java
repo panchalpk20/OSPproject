@@ -74,7 +74,12 @@ public class FeedFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feed, container, false);
         databaseReference = FirebaseDatabase.getInstance().getReference();
         context = view.getContext();
-        initUserObject();
+
+        SharedPreferences mPrefs =
+                context.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = mPrefs.getString(Constantss.sharedPrefUserKey, "");
+        user = gson.fromJson(json, User.class);
 
         checkBox_sort = view.findViewById(R.id.feed_checkbox_sort);
 
@@ -128,8 +133,8 @@ public class FeedFragment extends Fragment {
 
        // Log.e(TAG, "onCreateView: " + user.getCity());
 
-        double startLatitude = Double.parseDouble(user.getLat());
-        double startLongitude = Double.parseDouble(user.getLang());
+        double startLatitude = Double.parseDouble(mPrefs.getString(Constantss.STR_Latitude,""));
+        double startLongitude = Double.parseDouble(mPrefs.getString(Constantss.STR_Longitude,""));
 
         //float[] results = new float[]{};
 
@@ -180,6 +185,20 @@ public class FeedFragment extends Fragment {
 
         rc.setAdapter(adapter);
 
+
+        /*double startLatitude = Double.parseDouble(user.getLang());
+        double startLongitude = Double.parseDouble(user.getLang());
+        double endLatitude = startLatitude;
+        double endLongitude = startLongitude;
+        float[] results = new float[]{};
+        Location.distanceBetween(
+                startLatitude,
+                startLongitude,
+                endLatitude,
+                endLongitude,
+                results
+        );*/
+
         return view;
     }
 
@@ -226,48 +245,30 @@ public class FeedFragment extends Fragment {
         ref.child(user.getCity())
                 .child(Constantss.postsNode)
                 .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-               // Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
+                        // Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
 
-                list.clear();
+                        list.clear();
 
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    PostObject postObj = s.getValue(PostObject.class);
-                    if (postObj.getItem_name().contains(searchWord))
-                        list.add(postObj);
+                        for (DataSnapshot s : snapshot.getChildren()) {
+                            PostObject postObj = s.getValue(PostObject.class);
+                            if (postObj.getItem_name().contains(searchWord))
+                                list.add(postObj);
 //                    Log.e(TAG, "onDataChange: " + s.toString());
 
-                }
-                adapter.notifyDataSetChanged();
+                        }
+                        adapter.notifyDataSetChanged();
 
-            }
+                    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-
-
-    }
-
-
-    private void initUserObject() {
-
-        SharedPreferences mPrefs =
-                context.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String json = mPrefs.getString(Constantss.sharedPrefUserKey, "");
-        user = gson.fromJson(json, User.class);
+                    }
+                });
 
     }
-
-
-
-
-
-
 
 }

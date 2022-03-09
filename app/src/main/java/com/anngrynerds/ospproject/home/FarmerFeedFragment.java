@@ -96,8 +96,8 @@ public class FarmerFeedFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         initBottomSheetDialog();
 
-        lat = user.getLat();
-        lang = user.getLang();
+        lat = mPrefs.getString(Constantss.STR_Latitude,"");
+        lang = mPrefs.getString(Constantss.STR_Longitude,"");
         Log.e(TAG, "variables lat:lang "+lat+":"+lang );
 
         fab_addPost.setOnClickListener(v -> {

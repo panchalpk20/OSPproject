@@ -76,53 +76,6 @@ public class SplashScreen extends AppCompatActivity{
                     });
         }
 
-
-        /*if (ContextCompat.checkSelfPermission(SplashScreen.this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                &&
-                ContextCompat.checkSelfPermission(SplashScreen.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-            askForLocationPermissions();
-        } else {
-
-            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if ( !locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-                Toast.makeText(SplashScreen.this,
-                        "Please Enable Location",
-                        Toast.LENGTH_SHORT).show();
-            }
-            locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    10, 90000, new LocationListener() {
-                        @Override
-                        public void onLocationChanged(@NonNull Location location) {
-                            latitude = String.valueOf(location.getLatitude());
-                            longitude = String.valueOf(location.getLongitude());
-                            Log.e("Location ", "Lat: "+latitude+" | long: "+longitude );
-                            SharedPreferences.Editor prefsEditor = prefs.edit();
-                            prefsEditor.putString(Constantss.STR_Longitude, longitude + "");
-                            prefsEditor.putString(Constantss.STR_Latitude, latitude + "");
-                            prefsEditor.apply();
-
-                            if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
-                                //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(SplashScreen.this, HomeActivity.class));
-
-                            } else {
-                                startActivity(new Intent(SplashScreen.this, LoginActivity.class));
-                            }
-
-                            finish();
-
-                        }
-                    });
-        }*/
-
-
-
-
     }
 
 

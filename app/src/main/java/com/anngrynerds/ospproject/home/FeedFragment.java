@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class FeedFragment extends Fragment {
 
@@ -254,7 +255,9 @@ public class FeedFragment extends Fragment {
 
                         for (DataSnapshot s : snapshot.getChildren()) {
                             PostObject postObj = s.getValue(PostObject.class);
-                            if (postObj.getItem_name().contains(searchWord))
+                            if (postObj.getItem_name()
+                                    .toLowerCase(Locale.ROOT)
+                                    .contains(searchWord.toLowerCase(Locale.ROOT)))
                                 list.add(postObj);
 //                    Log.e(TAG, "onDataChange: " + s.toString());
 

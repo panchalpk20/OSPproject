@@ -37,6 +37,11 @@
     <string name="price_per_kg">Price (per KG)</string>
     <string name="place_order">Place Order</string>
     <string name="add_to_basket">Add to Basket</string>
+    <string name="order_details">Order Details</string>
+    <string name="item_name">Item Name</string>
+    <string name="cost">Cost</string>
+    <string name="total">Total</string>
+    <string name="_00000">000</string>
 
 
     <string-array name="cities">

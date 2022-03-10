@@ -3,6 +3,7 @@ package com.anngrynerds.ospproject.adapters;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -20,8 +21,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.anngrynerds.ospproject.CheckOut.CheckOutActivity;
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
+import com.anngrynerds.ospproject.pojo.Order;
+import com.anngrynerds.ospproject.pojo.OrderItem;
 import com.anngrynerds.ospproject.pojo.PostObject;
 import com.anngrynerds.ospproject.pojo.User;
 import com.bumptech.glide.Glide;
@@ -39,7 +43,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
@@ -269,7 +277,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 assert bs_btn_putOrder != null;
                 bs_btn_putOrder.setOnClickListener(v1 -> {
 //                        todo Implement method
-//                        putOrder();
+                        putOrder(model,
+                                bs_tv_qtyTobuy.getText().toString(),
+                                name);
+
+                        bottomSheetDialog.dismiss();
                 });
 
                 bottomSheetDialog.show();
@@ -279,6 +291,38 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         }
 
+
+    }
+
+    private void putOrder(PostObject model, String qtyToBuy , String sellerName) {
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.getDefault());
+        String code = df.format(c);
+        String orderId = "Order:"+"-" + code;
+
+        String totalCost = model.getItem_price();
+
+        ArrayList<OrderItem> orderItems = new ArrayList<>();
+        orderItems.add(new OrderItem(model.getItem_name(),
+                qtyToBuy,
+                model.getItem_price()));
+
+        ArrayList<String> post_ids = new ArrayList<>();
+        post_ids.add(model.getPost_id());
+
+        Order order = new Order(orderItems,
+                String.valueOf(orderItems.size()),
+                totalCost,
+                orderId,
+                post_ids
+                );
+
+        Gson gson = new Gson();
+        String json = gson.toJson(order);
+        Intent intent = new Intent(context, CheckOutActivity.class);
+        intent.putExtra(CheckOutActivity.EXTRA_OrderObject, json);
+        context.startActivity(intent);
 
     }
 

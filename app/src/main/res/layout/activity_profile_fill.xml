@@ -56,12 +56,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name"
-                    app:boxStrokeColor="@color/seperator"
+                    app:boxStrokeColor="@color/separator"
                     app:boxStrokeErrorColor="@color/error"
                     app:errorTextColor="@color/error"
-                    app:hintTextColor="@color/seperator"
+                    app:hintTextColor="@color/separator"
                     app:startIconDrawable="@drawable/ic_user"
-                    app:startIconTint="@color/seperator">
+                    app:startIconTint="@color/separator">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/profile_name"
@@ -77,12 +77,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/enter_mobile_number"
-                    app:boxStrokeColor="@color/seperator"
+                    app:boxStrokeColor="@color/separator"
                     app:boxStrokeErrorColor="@color/error"
                     app:errorTextColor="@color/error"
-                    app:hintTextColor="@color/seperator"
+                    app:hintTextColor="@color/separator"
                     app:startIconDrawable="@drawable/ic_otp"
-                    app:startIconTint="@color/seperator">
+                    app:startIconTint="@color/separator">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/profile_mobile_number"
@@ -109,11 +109,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="start|top"
                     android:hint="@string/hint_address"
-                    app:boxStrokeColor="@color/seperator"
+                    app:boxStrokeColor="@color/separator"
                     app:boxStrokeErrorColor="@color/error"
                     app:errorTextColor="@color/error"
-                    app:hintTextColor="@color/seperator"
-                    app:startIconTint="@color/seperator">
+                    app:hintTextColor="@color/separator"
+                    app:startIconTint="@color/separator">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/profile_address"

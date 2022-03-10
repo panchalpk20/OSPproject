@@ -42,6 +42,7 @@
     <string name="cost">Cost</string>
     <string name="total">Total</string>
     <string name="_00000">000</string>
+    <string name="enter_your_message">Enter your message</string>
 
 
     <string-array name="cities">

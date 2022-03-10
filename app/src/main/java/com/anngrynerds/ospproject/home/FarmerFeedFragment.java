@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -25,6 +26,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.anngrynerds.ospproject.R;
+import com.anngrynerds.ospproject.WeatherClasses.Main;
+import com.anngrynerds.ospproject.WeatherClasses.SupportClass;
+import com.anngrynerds.ospproject.WeatherClasses.Sys;
+import com.anngrynerds.ospproject.WeatherClasses.Wind;
+import com.anngrynerds.ospproject.WeatherClasses.weatherAPI;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.pojo.PostObject;
 import com.anngrynerds.ospproject.pojo.User;
@@ -45,6 +51,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class FarmerFeedFragment extends Fragment {
 
     private static final String TAG = "FarmerFeed";
@@ -62,6 +74,11 @@ public class FarmerFeedFragment extends Fragment {
     ProgressBar bs_progressBar;
     User user;
     DatabaseReference databaseReference;
+    TextView tvCity,tvTemp,tvFeelslike,tvMin,tvMax,tvWind,tvHumidity,tvPressure,tvSunrise,tvSunset,tvClouds;
+    ImageView imageView;
+    LinearLayout layout;
+    String api_key="d3ba099653be9ae93894fd0c30529ed3";
+    String city="sangli";
 
 
     public FarmerFeedFragment() {
@@ -84,6 +101,18 @@ public class FarmerFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_farmer_feed, container, false);
 
+        tvCity=view.findViewById(R.id.tv_city);
+        tvTemp=view.findViewById(R.id.tv_temp);
+        tvFeelslike=view.findViewById(R.id.tv_feelslike);
+        tvMin=view.findViewById(R.id.tv_mintemp);
+        tvMax=view.findViewById(R.id.tv_maxtemp);
+        tvWind=view.findViewById(R.id.tv_wind);
+        tvHumidity=view.findViewById(R.id.tv_humidity);
+        tvPressure=view.findViewById(R.id.tv_pressure);
+        tvSunrise=view.findViewById(R.id.tv_sunrise);
+        tvSunset=view.findViewById(R.id.tv_sunset);
+        layout=view.findViewById(R.id.linear);
+        tvClouds=view.findViewById(R.id.tv_clouds);
 
         context = view.getContext();
         SharedPreferences mPrefs =
@@ -99,6 +128,7 @@ public class FarmerFeedFragment extends Fragment {
         lat = mPrefs.getString(Constantss.STR_Latitude,"");
         lang = mPrefs.getString(Constantss.STR_Longitude,"");
         Log.e(TAG, "variables lat:lang "+lat+":"+lang );
+        weatherProcessing(city);
 
         fab_addPost.setOnClickListener(v -> {
             bottomSheetDialog.show();
@@ -157,6 +187,76 @@ public class FarmerFeedFragment extends Fragment {
                 });
 
         return view;
+    }
+
+    private void weatherProcessing(String city) {
+        String url="https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=b5a7dde7feb96ae2a83514dfa7ce965b";
+        Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl("https://api.openweathermap.org/data/2.5/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        weatherAPI weatherAPI=retrofit.create(weatherAPI.class);
+        Call<SupportClass> supportClassCall=weatherAPI.getweather(city,api_key);
+        supportClassCall.enqueue(new Callback<SupportClass>() {
+            @Override
+            public void onResponse(Call<SupportClass> call, Response<SupportClass> response) {
+                if(response.code()==404){
+                    Toast.makeText(context,"Please enter valid data",Toast.LENGTH_LONG).show();
+                }
+                else if(!(response.isSuccessful())){
+                    Toast.makeText(context,response.code(),Toast.LENGTH_LONG).show();
+
+                }
+                //location + temperature + feels like-min, max tmp + wind + humidity + pressure
+                tvCity.setText(city);
+                SupportClass supportClass=response.body();
+                Main main=supportClass.getMain();
+                Double temp=main.getTemp();
+                Integer temperature=(int)(temp-273.15);
+                tvTemp.setText(String.valueOf(temperature));
+                Double Feellike=main.getTempMin();
+                Integer feel=(int)(Feellike-273.15);
+                tvFeelslike.setText(String.valueOf(feel));
+                Double mintemp=main.getTempMin();
+                Integer MinTemp=(int)(mintemp-273.15);
+                tvMin.setText(String.valueOf(MinTemp));
+                Double maxtemp=main.getTempMin();
+                Integer MaxTemp=(int)(maxtemp-273.15);
+                tvMax.setText(String.valueOf(MaxTemp));
+                Wind wind=supportClass.getWind();
+                Double speed=wind.getSpeed();
+                tvWind.setText(String.valueOf(speed));
+                tvHumidity.setText(String.valueOf(main.getHumidity()));
+                tvPressure.setText(String.valueOf(main.getPressure()));
+                Sys sys=supportClass.getSys();
+
+                long sunrise=sys.getSunrise();
+                Date date1=new Date(sunrise*1000);
+                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+                tvSunrise.setText(String.valueOf(sdf.format(date1)));
+
+                long sunset=sys.getSunset();
+                Date date2=new Date(sunset*1000);
+                tvSunset.setText(String.valueOf(sdf.format(date2)));
+
+
+                tvClouds.setText(supportClass.getWeather().get(0).getDescription());
+                String weatherIcon = supportClass.getWeather().get(0).getIcon();
+                String iconUrl = "https://api.openweathermap.org/data/2.5/"+weatherIcon+".png";
+
+                // String icon=weather.getIcon();
+                //String com=icon+cloud;
+
+            }
+
+            @Override
+            public void onFailure(Call<SupportClass> call, Throwable t) {
+                Toast.makeText(context,t.getMessage(),Toast.LENGTH_LONG).show();
+                //  tvClouds.setText(t.getMessage());
+
+            }
+        });
+
     }
 
     private void initBottomSheetDialog() {

@@ -100,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
                             .beginTransaction()
                             .replace(R.id.main_activity_frame_layout, FarmerFeedFragment.newInstance())
                             .commit();
+                    //getSupportFragmentManager().beginTransaction().add(R.id.linearL,FarmerFeedFragment.newInstance()).commit();
                 }
 
                 return true;

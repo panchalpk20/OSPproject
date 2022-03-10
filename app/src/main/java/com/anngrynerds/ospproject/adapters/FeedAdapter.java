@@ -90,7 +90,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.tv_distance.setVisibility(View.GONE);
         }else{
             int d = (int) Math.ceil(Float.parseFloat(model.getDistance()));
-            holder.tv_distance.setText(MessageFormat.format("{0}M away from you", d));
+            int d_km=d/1000;
+            holder.tv_distance.setText(MessageFormat.format("{0} KM away from you", d_km));
         }
 
 

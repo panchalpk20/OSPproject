@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">OSPproject</string>
     <!-- Strings related to login -->
+    <string name="Feels_like">Feels like</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>

@@ -72,6 +72,8 @@ public class SplashScreen extends AppCompatActivity{
                             }
 
                             finish();
+                        }else{
+                            Log.e("LOCATION", "is Null" );
                         }
                     });
         }

@@ -87,7 +87,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
 
         holder.pg.setVisibility(View.VISIBLE);
-            for (String url : model.getFilePathList()) {
+        if(model.getFilePathList() != null)
+        for (String url : model.getFilePathList()) {
 
                 Log.e("feedAdp: ", "url: " + url);
 

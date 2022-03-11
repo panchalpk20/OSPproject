@@ -39,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setItemIconTintList(null);
         updateCoordinatesInDatabasee();
 
-        if (getIntent().getBooleanExtra("toProfile", false)) {
+       /* if (getIntent().getBooleanExtra("toProfile", false)) {
 
             getSupportFragmentManager()
                     .beginTransaction()
@@ -47,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
                     .commit();
             bottomNavigationView.setSelectedItemId(R.id.bottom_menu_profile);
 
-        } else {
+        } else {*/
 
             // loading feeds acc to user
             if(u.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)){
@@ -64,7 +64,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-        }
+//        }
 
 
 

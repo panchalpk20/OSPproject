@@ -28,5 +28,4 @@
         app:itemBackground="@drawable/navicon_itembg"
         />
 
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

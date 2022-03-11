@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,9 +89,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         if(model.getDistance().isEmpty()){
             holder.tv_distance.setVisibility(View.GONE);
         }else{
-            int d = (int) Math.ceil(Float.parseFloat(model.getDistance()));
-            int d_km=d/1000;
-            holder.tv_distance.setText(MessageFormat.format("{0} KM away from you", d_km));
+            float d_km=Float.parseFloat(model.getDistance())/1000;
+            holder.tv_distance.setText(MessageFormat.format("{0} KM away from you",
+                    new DecimalFormat("##.##").format(d_km)));
         }
 
 
@@ -99,7 +99,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         if(model.getFilePathList() != null)
         for (String url : model.getFilePathList()) {
 
-                Log.e("feedAdp: ", "url: " + url);
+//               // Log.e("feedAdp: ", "url: " + url);
 
 
                 ImageView imageView = new ImageView(context);
@@ -149,9 +149,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             }
 
 
-        Log.e(TAG, "onBindViewHolder: " + isFarmer);
+//    //    Log.e(TAG, "onBindViewHolder: " + isFarmer);
         if (isFarmer) {
-            holder.btn_buy.setText("Delete Post");
+            holder.btn_buy.setText(R.string.Delete);
             holder.btn_buy.setOnClickListener(v -> {
                 //implement delete post
                 int newPosition = holder.getAdapterPosition();
@@ -185,11 +185,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 Button bs_btn_putOrder = bottomSheetDialog.findViewById(R.id.bs_buy_btn_buy);
 
                 String name = u != null ? u.getName() : "";
-
+                String userMobileNo = u != null ? u.getMobNo() : "null";
                 assert bs_pg != null;
                 for (String url : model.getFilePathList()) {
 
-                    Log.e("feedAdp: ", "url: " + url);
+//                    Log.e("feedAdp: ", "url: " + url);
 
                     ImageView imageView1 = new ImageView(context);
                     Glide.with(context)
@@ -280,7 +280,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 //                        todo Implement method
                         putOrder(model,
                                 bs_tv_qtyTobuy.getText().toString(),
-                                name);
+                                userMobileNo);
 
                         bottomSheetDialog.dismiss();
                 });
@@ -295,35 +295,74 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     }
 
-    private void putOrder(PostObject model, String qtyToBuy , String sellerName) {
+    private void putOrder(PostObject model, String qtyToBuy , String sellerNumber) {
+
+
+        SharedPreferences prefs = context.
+                getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(Constantss.sharedPrefUserKey, "");
+        User currentUser = gson.fromJson(json, User.class);
+        resultUser = null;
+
 
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.getDefault());
         String code = df.format(c);
         String orderId = "Order:"+"-" + code;
 
+
         String totalCost = model.getItem_price();
 
         ArrayList<OrderItem> orderItems = new ArrayList<>();
         orderItems.add(new OrderItem(model.getItem_name(),
                 qtyToBuy,
-                model.getItem_price()));
+                model.getItem_price(),
+                model.getPost_id()
+        ));
 
-        ArrayList<String> post_ids = new ArrayList<>();
-        post_ids.add(model.getPost_id());
+        String phno = model.getPost_id().split("-")[0];
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(currentUser.getCity())
+                .child(Constantss.ROLE_FARMER)
+                .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                resultUser = snapshot.getValue(User.class);
+//                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
 
-        Order order = new Order(orderItems,
-                String.valueOf(orderItems.size()),
-                totalCost,
-                orderId,
-                post_ids
+                Order order = new Order(orderItems,
+                        String.valueOf(orderItems.size()),
+                        totalCost,
+                        orderId,
+                        resultUser.getMobNo(),  //mobile number of seller
+                        "ChangeDWhilePuttingOrder"  //mobile number of buyer
                 );
 
-        Gson gson = new Gson();
-        String json = gson.toJson(order);
-        Intent intent = new Intent(context, CheckOutActivity.class);
-        intent.putExtra(CheckOutActivity.EXTRA_OrderObject, json);
-        context.startActivity(intent);
+                Gson gson = new Gson();
+                String json = gson.toJson(order);
+                Intent intent = new Intent(context, CheckOutActivity.class);
+                intent.putExtra(CheckOutActivity.EXTRA_OrderObject, json);
+                context.startActivity(intent);
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -344,7 +383,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 resultUser = snapshot.getValue(User.class);
-                Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
+//               // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
 
             }
 

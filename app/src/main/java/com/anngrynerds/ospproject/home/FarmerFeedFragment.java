@@ -133,8 +133,8 @@ public class FarmerFeedFragment extends Fragment {
         img_cover = view.findViewById(R.id.weather_iv_cover);
         time = view.findViewById(R.id.tv_time);
 
-        setImageCoverAccToTime();
         context = view.getContext();
+        setImageCoverAccToTime();
 
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_transparent_loading);
@@ -221,14 +221,27 @@ public class FarmerFeedFragment extends Fragment {
         Calendar c = Calendar.getInstance();
         int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
-        if (timeOfDay < 12) {
-            img_cover.setImageResource(R.drawable.img_morning);
-        } else if (timeOfDay < 16) {
-            img_cover.setImageResource(R.drawable.img_noon);
-        } else if (timeOfDay < 21) {
-            img_cover.setImageResource(R.drawable.img_evening);
-        } else {
+        Log.e(TAG, "setImageCoverAccToTime: "+timeOfDay );
+
+        if (timeOfDay < 5){
             img_cover.setImageResource(R.drawable.img_night);
+            Toast.makeText(context,"Good Night",Toast.LENGTH_SHORT).show();
+        }else
+        if (timeOfDay > 5 && timeOfDay < 12) {
+            img_cover.setImageResource(R.drawable.img_morning);
+            Toast.makeText(context,"Good Morning",Toast.LENGTH_SHORT).show();
+        } else if (timeOfDay >= 12 && timeOfDay < 16) {
+            img_cover.setImageResource(R.drawable.img_noon);
+            Toast.makeText(context,"Good Afternoon",Toast.LENGTH_SHORT).show();
+
+        } else if (timeOfDay >= 16 && timeOfDay < 20) {
+            img_cover.setImageResource(R.drawable.img_evening);
+            Toast.makeText(context,"Good Evening",Toast.LENGTH_SHORT).show();
+
+        } else if(timeOfDay >= 20) {
+            img_cover.setImageResource(R.drawable.img_night);
+            Toast.makeText(context,"Good Night",Toast.LENGTH_SHORT).show();
+
         }
 
 
@@ -386,7 +399,7 @@ public class FarmerFeedFragment extends Fragment {
             } else if (post_item_price.getText().toString().isEmpty()) {
                 inputLayout_item_price.setError("Enter Name of the item");
             } else if (filePathList == null) {
-                Toast.makeText(context, "Select Atleast one Image", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Select Atlas one Image", Toast.LENGTH_LONG).show();
             } else {
 
                 //good to go, creating post

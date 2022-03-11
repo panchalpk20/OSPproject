@@ -12,4 +12,5 @@ public class Constantss {
     public static String STR_Longitude = "Longitude";
     public static String STR_Latitude = "Latitude";
 
+    public static String orderNode = "orders";
 }

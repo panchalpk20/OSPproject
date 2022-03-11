@@ -8,14 +8,32 @@ public class Order {
     String totalItems;
     String totalCost;
     String orderId;
-    ArrayList<String> fromPost_id;
+    String fromId;
+    String toId;
 
-    public Order(ArrayList<OrderItem> list, String totalItems, String totalCost, String orderId, ArrayList<String> fromPost_id) {
+    public Order(ArrayList<OrderItem> list, String totalItems, String totalCost, String orderId, String fromId, String toId) {
         this.list = list;
         this.totalItems = totalItems;
         this.totalCost = totalCost;
         this.orderId = orderId;
-        this.fromPost_id = fromPost_id;
+        this.fromId = fromId;
+        this.toId = toId;
+    }
+
+    public String getFromId() {
+        return fromId;
+    }
+
+    public void setFromId(String fromId) {
+        this.fromId = fromId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
     }
 
     public ArrayList<OrderItem> getList() {
@@ -48,13 +66,5 @@ public class Order {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
-    }
-
-    public ArrayList<String> getFromPost_id() {
-        return fromPost_id;
-    }
-
-    public void setFromPost_id(ArrayList<String> fromPost_id) {
-        this.fromPost_id = fromPost_id;
     }
 }

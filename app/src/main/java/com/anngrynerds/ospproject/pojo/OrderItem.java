@@ -5,14 +5,24 @@ public class OrderItem {
     String name;
     String qty;
     String cost;
+    String postId;
 
     public OrderItem() {
     }
 
-    public OrderItem(String name, String qty, String cost) {
+    public OrderItem(String name, String qty, String cost, String postId) {
         this.name = name;
         this.qty = qty;
         this.cost = cost;
+        this.postId = postId;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public String getName() {

@@ -1,5 +1,7 @@
 package com.anngrynerds.ospproject.home;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -10,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -45,12 +46,13 @@ public class FeedFragment extends Fragment {
     RecyclerView rc;
     FeedAdapter adapter;
     EditText et_searchQry;
-    Button btn_search;
     DatabaseReference ref;
     ArrayList<PostObject> list = new ArrayList<>();
-    TextView searchDesc;
+//    TextView searchDesc;
     CheckBox checkBox_sort;
-
+    SharedPreferences mPrefs;
+    TextView pgMsg;
+    Dialog dialog;
     public FeedFragment() {
         // Required empty public constructor
     }
@@ -76,19 +78,23 @@ public class FeedFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference();
         context = view.getContext();
 
-        SharedPreferences mPrefs =
-                context.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
+        mPrefs = context.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         String json = mPrefs.getString(Constantss.sharedPrefUserKey, "");
         user = gson.fromJson(json, User.class);
 
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_transparent_loading);
+        dialog.setCancelable(false);
+        pgMsg = dialog.findViewById(R.id.dialog_pgmsg);
+
+
         checkBox_sort = view.findViewById(R.id.feed_checkbox_sort);
 
         et_searchQry = view.findViewById(R.id.feed_et_searchqry);
-        btn_search = view.findViewById(R.id.btn_search);
 
-        searchDesc = view.findViewById(R.id.feed_t_searchdesc);
-        searchDesc.setVisibility(View.GONE);
+//        searchDesc = view.findViewById(R.id.feed_t_searchdesc);
+//        searchDesc.setVisibility(View.GONE);
 
 
         checkBox_sort.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -96,7 +102,7 @@ public class FeedFragment extends Fragment {
             if(isChecked){
                 sortByDistance();
             }else{
-               // dontSort();
+                dontSort();
             }
 
         });
@@ -117,10 +123,10 @@ public class FeedFragment extends Fragment {
         });
 
 
-        searchDesc.setOnClickListener(v -> {
-            noSearch();
-            searchDesc.setVisibility(View.GONE);
-        });
+//        searchDesc.setOnClickListener(v -> {
+//            noSearch();
+//            searchDesc.setVisibility(View.GONE);
+//        });
 
         //recyclerView
         rc = view.findViewById(R.id.fragment_feed_rc);
@@ -131,17 +137,30 @@ public class FeedFragment extends Fragment {
                 .getReference();
 
         adapter = new FeedAdapter(list, context, false);
+        rc.setAdapter(adapter);
 
        // Log.e(TAG, "onCreateView: " + user.getCity());
+
+
+
+        //float[] results = new float[]{};
+
+        LoadPosts();
+
+        return view;
+    }
+
+    private void LoadPosts() {
+
+        showpg();
 
         double startLatitude = Double.parseDouble(mPrefs.getString(Constantss.STR_Latitude,""));
         double startLongitude = Double.parseDouble(mPrefs.getString(Constantss.STR_Longitude,""));
 
-        //float[] results = new float[]{};
-
         ref.child(user.getCity())
                 .child(Constantss.postsNode)
                 .addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -151,7 +170,7 @@ public class FeedFragment extends Fragment {
 
                 for (DataSnapshot s : snapshot.getChildren()) {
                     PostObject postObj = s.getValue(PostObject.class);
-                    if(postObj!=null){
+                    if(postObj!=null && Integer.parseInt(postObj.getItem_qty()) != 0){
                         double postLat = Double.parseDouble(postObj.getLat());
                         double postLong = Double.parseDouble(postObj.getLang());
 
@@ -174,6 +193,7 @@ public class FeedFragment extends Fragment {
                     }
 
                 }
+                closepg();
                 adapter.notifyDataSetChanged();
             }
 
@@ -182,25 +202,10 @@ public class FeedFragment extends Fragment {
 
             }
         });
+    }
 
-
-        rc.setAdapter(adapter);
-
-
-        /*double startLatitude = Double.parseDouble(user.getLang());
-        double startLongitude = Double.parseDouble(user.getLang());
-        double endLatitude = startLatitude;
-        double endLongitude = startLongitude;
-        float[] results = new float[]{};
-        Location.distanceBetween(
-                startLatitude,
-                startLongitude,
-                endLatitude,
-                endLongitude,
-                results
-        );*/
-
-        return view;
+    private void dontSort() {
+        LoadPosts();
     }
 
     private void sortByDistance() {
@@ -212,34 +217,6 @@ public class FeedFragment extends Fragment {
 
     }
 
-    private void noSearch() {
-
-        ref.child(user.getCity())
-                .child(Constantss.postsNode)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        //         Log.e(TAG, "onDataChange: " + snapshot.getChildrenCount());
-
-                        list.clear();
-
-                        for (DataSnapshot s : snapshot.getChildren()) {
-                            PostObject postObj = s.getValue(PostObject.class);
-                            list.add(postObj);
-//                    Log.e(TAG, "onDataChange: " + s.toString());
-
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-    }
 
     private void fireBaseSearch(String searchWord) {
 
@@ -255,7 +232,9 @@ public class FeedFragment extends Fragment {
 
                         for (DataSnapshot s : snapshot.getChildren()) {
                             PostObject postObj = s.getValue(PostObject.class);
-                            if (postObj.getItem_name()
+                            if (postObj != null
+                                    && Integer.parseInt(postObj.getItem_qty()) != 0
+                                    && postObj.getItem_name()
                                     .toLowerCase(Locale.ROOT)
                                     .contains(searchWord.toLowerCase(Locale.ROOT)))
                                 list.add(postObj);
@@ -273,5 +252,17 @@ public class FeedFragment extends Fragment {
                 });
 
     }
+
+
+
+    private void closepg(){
+        dialog.dismiss();
+    }
+    private void showpg(){
+        pgMsg.setText("Loading...!");
+        dialog.show();
+    }
+
+
 
 }

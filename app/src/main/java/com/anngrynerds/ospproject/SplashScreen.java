@@ -3,9 +3,11 @@ package com.anngrynerds.ospproject;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +23,8 @@ import com.anngrynerds.ospproject.login.LoginActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Locale;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashScreen extends AppCompatActivity{
@@ -65,9 +69,13 @@ public class SplashScreen extends AppCompatActivity{
 
                             if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
                                 //   Toast.makeText(SplashScreen.this, "Already Logged in", Toast.LENGTH_SHORT).show();
+
+                                loadLanguage();
+
                                 startActivity(new Intent(SplashScreen.this, HomeActivity.class));
 
                             } else {
+                                changeLanguage();
                                 startActivity(new Intent(SplashScreen.this, LoginActivity.class));
                             }
 
@@ -80,7 +88,47 @@ public class SplashScreen extends AppCompatActivity{
 
     }
 
+    private void changeLanguage() {
+        final String languages[]={"English","Hindi","Marathi"};
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(SplashScreen.this);
+        alertDialog.setTitle("Choose Language");
+        alertDialog.setSingleChoiceItems(languages, -1, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(which==0){
+                    setLocale("en");
+                    recreate();
+                } else if(which==1){
+                    setLocale("hi");
+                    recreate();
+                } else if(which==2){
+                    setLocale("mr");
+                    recreate();
+                }
+            }
+        });
+        alertDialog.create();
+        alertDialog.show();
+    }
 
+    private void setLocale(String language) {
+        Locale local=new Locale(language);
+        Locale.setDefault(local);
+
+        Configuration configuration=new Configuration();
+        configuration.locale=local;
+        getBaseContext().getResources().updateConfiguration(configuration,getBaseContext().getResources().getDisplayMetrics());
+
+        SharedPreferences.Editor editor=getSharedPreferences("Settings",MODE_PRIVATE).edit();
+        editor.putString("app_lang",language);
+        editor.apply();
+    }
+    private void loadLanguage(){
+        SharedPreferences preferences=getSharedPreferences("Settings",MODE_PRIVATE);
+        String lang=preferences.getString("app_lang","");
+        setLocale(lang);
+
+    }
 
     private void askForLocationPermissions() {
 

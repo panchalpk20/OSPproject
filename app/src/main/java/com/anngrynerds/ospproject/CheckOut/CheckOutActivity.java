@@ -1,7 +1,6 @@
 package com.anngrynerds.ospproject.CheckOut;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -114,23 +113,14 @@ public class CheckOutActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
             builder.setTitle("Payment successful?");
-            builder.setPositiveButton("yes", (dialog, which) -> {
-                makeOrder();
-            });
+            builder.setPositiveButton("yes", (dialog, which) -> makeOrder());
 
-            builder.setNegativeButton("No", (dialog, which) -> {
-                paymentFailed();
-            });
+            builder.setNegativeButton("No", (dialog, which) -> paymentFailed());
 
 
         });
 
-        btn_cod.setOnClickListener(v->{
-
-            makeOrder();
-
-
-        });
+        btn_cod.setOnClickListener(v-> makeOrder());
 
     }
 
@@ -173,18 +163,17 @@ public class CheckOutActivity extends AppCompatActivity {
                                         new AlertDialog.Builder(context)
                                                 .setTitle("Order Successful!!")
                                                 .setMessage("Your order has been placed successfully!")
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
+                                                .setPositiveButton("OK", (dialog, which) -> {
 
-                                                        dialog.dismiss();
+                                                    dialog.dismiss();
 
-                                                        Intent intent = new Intent(context, HomeActivity.class);
-                                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                                                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        startActivity(intent);
+                                                    Intent intent = new Intent(context, HomeActivity.class);
+                                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                                                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    startActivity(intent);
 
-                                                    }
                                                 })
+                                                .setCancelable(false)
                                                 .show();
                                     }
 

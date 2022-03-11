@@ -4,7 +4,7 @@
     <item
         android:id="@+id/bottom_menu_ai"
         android:enabled="true"
-        android:icon="@drawable/ic_user"
+        android:icon="@drawable/ic_chat"
         android:title="AI Chat"
         app:showAsAction="always"
         />
@@ -12,7 +12,7 @@
     <item
         android:id="@+id/bottom_menu_show_feed"
         android:enabled="true"
-        android:icon="@drawable/ic_user"
+        android:icon="@drawable/ic_home"
         android:title="Feed"
         app:showAsAction="always"
         />
@@ -20,7 +20,7 @@
     <item
         android:id="@+id/bottom_menu_profile"
         android:enabled="true"
-        android:icon="@drawable/ic_user"
+        android:icon="@drawable/ic_profile"
         android:title="Profile"
         app:showAsAction="always"
 

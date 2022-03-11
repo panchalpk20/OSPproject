@@ -13,6 +13,7 @@ import com.anngrynerds.ospproject.R;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("rawtypes")
 public class ChatAdapter extends RecyclerView.Adapter {
 
     ArrayList<Chatsmodal> chatsmodalArrayList;
@@ -79,6 +80,11 @@ public class ChatAdapter extends RecyclerView.Adapter {
             super(itemView);
             userMsg = itemView.findViewById(R.id.userMsg);
         }
+    }
+
+    public void addItem(Chatsmodal item, int position) {
+        this.chatsmodalArrayList.add(getItemCount(), item);
+        notifyItemInserted(getItemCount());
     }
 
     public static class botViewHolder extends RecyclerView.ViewHolder {

@@ -47,8 +47,19 @@
     <string name="total">Total</string>
     <string name="_00000">000</string>
     <string name="enter_your_message">Enter your message</string>
-
-
+    <string name="c">°C</string>
+    <string name="today_s_weather_in">Today\'s Weather In</string>
+    <string name="temperature">Temperature</string>
+    <string name="clouds">Clouds</string>
+    <string name="Sky">Sky</string>
+    <string name="time">Time</string>
+    <string name="up_arrow">↑</string>
+    <string name="down_arrow">↓</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="bar">|</string>
+    <string name="m_s">m/s</string>
+    <string name="send">Send</string>
     <string-array name="cities">
         <item>Pune</item>
         <item>Mumbai</item>

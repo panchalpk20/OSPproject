@@ -8,18 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anngrynerds.ospproject.R;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.mlkit.nl.languageid.LanguageIdentification;
 import com.google.mlkit.nl.languageid.LanguageIdentifier;
 import com.google.mlkit.nl.translate.TranslateLanguage;
@@ -28,6 +24,7 @@ import com.google.mlkit.nl.translate.Translator;
 import com.google.mlkit.nl.translate.TranslatorOptions;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,17 +36,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AIFragment extends Fragment {
 
     private static final String TAG = "MyActivity";
-    private final String USER_KEY = "user";
     private final String BOT_KEY = "bot";
     RecyclerView recyclerView;
     EditText editText;
     ImageButton imageView;
     ArrayList<Chatsmodal> chatsmodalArrayList;
     ChatAdapter chatAdapter;
-    TextView textView;
     Translator translator;
-    MsgModal msgModal;
-    private String language1;
     private Context context;
 
     public AIFragment() {
@@ -59,12 +52,11 @@ public class AIFragment extends Fragment {
 
     // TODO: Rename and change types and number of parameters
     public static AIFragment newInstance() {
-        AIFragment fragment = new AIFragment();
-       /* Bundle args = new Bundle();
+        /* Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);*/
-        return fragment;
+        return new AIFragment();
     }
 
     @Override
@@ -86,8 +78,11 @@ public class AIFragment extends Fragment {
         chatsmodalArrayList = new ArrayList<>();
         chatAdapter = new ChatAdapter(chatsmodalArrayList, context);
         LinearLayoutManager manager = new LinearLayoutManager(context);
+        manager.setStackFromEnd(true);
+        manager.setReverseLayout(false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(chatAdapter);
+
         imageView.setOnClickListener(v -> {
             if (editText.getText().toString().isEmpty()) {
                 Toast.makeText(context, "Please enter your message", Toast.LENGTH_SHORT).show();
@@ -103,8 +98,12 @@ public class AIFragment extends Fragment {
 
 
     private void storeResponse(String message) {
-        chatsmodalArrayList.add(new Chatsmodal(message, USER_KEY));
-        chatAdapter.notifyDataSetChanged();
+        String USER_KEY = "user";
+//        chatsmodalArrayList.add(new Chatsmodal(message, USER_KEY));
+//        chatAdapter.notifyDataSetChanged();
+        chatAdapter.addItem(new Chatsmodal(message, USER_KEY), 0);
+        recyclerView.scrollToPosition(chatsmodalArrayList.size() - 1);
+
         identifyText(message);
     }
 
@@ -113,9 +112,8 @@ public class AIFragment extends Fragment {
                 LanguageIdentification.getClient();
         languageIdentifier.identifyLanguage(msg)
                 .addOnSuccessListener(
-                        new OnSuccessListener<String>() {
-                            @Override
-                            public void onSuccess(@Nullable String languageCode) {
+                        languageCode -> {
+                            if (languageCode != null) {
                                 if (languageCode.equals("und")) {
                                     Log.i(TAG, "Can't identify language.");
                                 } else {
@@ -131,50 +129,34 @@ public class AIFragment extends Fragment {
                             }
                         })
                 .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Model couldn’t be loaded or other internal error.
-                                // ...
-                            }
+                        e -> {
+                            // Model couldn’t be loaded or other internal error.
+                            // ...
                         });
     }
-
     private void prepareModel(String code, String language) {
         //String l= textView.getText().toString();
-        TranslatorOptions options = new TranslatorOptions.Builder().
-                setSourceLanguage(TranslateLanguage.fromLanguageTag(language))
-                .setTargetLanguage(TranslateLanguage.ENGLISH)
-                .build();
-        translator = Translation.getClient(options);
+        if(TranslateLanguage.fromLanguageTag(language)!=null){
 
-        translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                translator.translate(code).addOnSuccessListener(new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        //outputText.setText(s);
-                        //Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
+            TranslatorOptions options = new TranslatorOptions.Builder().
+                    setSourceLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(language)))
+                    .setTargetLanguage(TranslateLanguage.ENGLISH)
+                    .build();
+            translator = Translation.getClient(options);
 
-                        converter(s, language);
-                        //languagecodeTransfer(s);
+            translator.downloadModelIfNeeded().addOnSuccessListener(unused -> translator.translate(code).addOnSuccessListener(s -> {
+                //outputText.setText(s);
+                //Toast.makeText(MainActivity.this,s,Toast.LENGTH_SHORT).show();
 
-                    }
-                });
+                converter(s, language);
+                //languagecodeTransfer(s);
 
+            })).addOnFailureListener(e -> {
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-            }
-        });
+            });
+        }
 
     }
-
-
     private void converter(String message, String lang) {
 
         // "http://api.brainshop.ai/get?bid=164570&key=w09SsiX1qDYKy4XH&uid=[uid]&msg="+
@@ -190,60 +172,53 @@ public class AIFragment extends Fragment {
         Call<MsgModal> call = retroFitApi.getMessage(url);
         call.enqueue(new Callback<MsgModal>() {
             @Override
-            public void onResponse(Call<MsgModal> call, Response<MsgModal> response) {
+            public void onResponse(@NonNull Call<MsgModal> call, @NonNull Response<MsgModal> response) {
                 if (response.isSuccessful()) {
                     MsgModal msgModal = response.body();
-                    String msgbody = msgModal.getCnt();
+                    String msgbody = null;
+                    if (msgModal != null) {
+                        msgbody = msgModal.getCnt();
+                    }
                     Log.e(TAG, "Feed" + msgbody);
 
-                    String l = lang;
-                    languagecodeTransfer(msgbody, l);
+                    languagecodeTransfer(msgbody, lang);
                     // getter(s);
                     recyclerView.scrollToPosition(chatsmodalArrayList.size() - 1);
                 }
             }
 
             @Override
-            public void onFailure(Call<MsgModal> call, Throwable t) {
-                chatsmodalArrayList.add(new Chatsmodal("no response", BOT_KEY));
-                chatAdapter.notifyDataSetChanged();
+            public void onFailure(@NonNull Call<MsgModal> call, @NonNull Throwable t) {
+//                chatsmodalArrayList.add(new Chatsmodal("no response", BOT_KEY));
+//                chatAdapter.notifyDataSetChanged();
+
+                chatAdapter.addItem(new Chatsmodal("no response", BOT_KEY), 0);
+                recyclerView.scrollToPosition(chatsmodalArrayList.size() - 1);
+
             }
         });
     }
-
-
     private void languagecodeTransfer(String msgbody, String langcode) {
         //language1="mr";
         TranslatorOptions options = new TranslatorOptions.Builder().
                 setSourceLanguage(TranslateLanguage.ENGLISH)
-                .setTargetLanguage(TranslateLanguage.fromLanguageTag(langcode))
+                .setTargetLanguage(Objects.requireNonNull(TranslateLanguage.fromLanguageTag(langcode)))
                 .build();
         translator = Translation.getClient(options);
 
-        translator.downloadModelIfNeeded().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void unused) {
-                translator.translate(msgbody).addOnSuccessListener(new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        getter(s);
-                        // Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-            }
+        translator.downloadModelIfNeeded().addOnSuccessListener(unused -> // Toast.makeText(MainActivity.this,s,Toast.LENGTH_LONG).show();
+                translator.translate(msgbody).addOnSuccessListener(this::getter)).addOnFailureListener(e -> {
         });
 
     }
 
     private void getter(String ss) {
-        chatsmodalArrayList.add(new Chatsmodal(ss, BOT_KEY));
-        chatAdapter.notifyDataSetChanged();
+//        chatsmodalArrayList.add(new Chatsmodal(ss, BOT_KEY));
+//        chatAdapter.notifyDataSetChanged();
+
+        chatAdapter.addItem(new Chatsmodal(ss, BOT_KEY), 0);
+        recyclerView.scrollToPosition(chatsmodalArrayList.size() - 1);
+
     }
 
 

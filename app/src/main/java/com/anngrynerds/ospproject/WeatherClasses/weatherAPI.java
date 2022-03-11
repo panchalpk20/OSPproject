@@ -7,5 +7,7 @@ import retrofit2.http.Query;
 
 public interface weatherAPI {
     @GET("weather")
-    Call<SupportClass> getweather(@Query("q")String cityName,@Query("appid")String ApiKey);
+    Call<SupportClass> getweather(@Query("lat")String lat,
+                                  @Query("lon")String lang
+            ,@Query("appid")String ApiKey);
 }

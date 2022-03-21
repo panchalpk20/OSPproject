@@ -11,6 +11,9 @@ public class Order {
     String fromId;
     String toId;
 
+    public Order() {
+    }
+
     public Order(ArrayList<OrderItem> list, String totalItems, String totalCost, String orderId, String fromId, String toId) {
         this.list = list;
         this.totalItems = totalItems;
@@ -66,5 +69,17 @@ public class Order {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "\nlist=" + list +
+                ", \ntotalItems='" + totalItems + '\'' +
+                ", \ntotalCost='" + totalCost + '\'' +
+                ", \norderId='" + orderId + '\'' +
+                ", \nfromId='" + fromId + '\'' +
+                ", \ntoId='" + toId + '\'' +
+                '}';
     }
 }

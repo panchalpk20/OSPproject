@@ -130,6 +130,21 @@
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
+
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/profile_page_btn_myorders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/buttonBackground2"
+                        android:drawablePadding="5dp"
+                        android:text="@string/my_orders"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
                 </LinearLayout>
         </androidx.cardview.widget.CardView>
 

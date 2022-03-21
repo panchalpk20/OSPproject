@@ -35,17 +35,20 @@
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_a_i.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_farmer_feed.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_feed.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_orders.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_profile.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_bot_reply.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_cust_order.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_post.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_user_holder.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/menu/post_options_menu.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.204" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.204" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

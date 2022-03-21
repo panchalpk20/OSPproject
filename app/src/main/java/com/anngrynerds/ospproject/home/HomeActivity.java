@@ -39,6 +39,11 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setItemIconTintList(null);
         updateCoordinatesInDatabasee();
 
+
+
+
+
+
        /* if (getIntent().getBooleanExtra("toProfile", false)) {
 
             getSupportFragmentManager()

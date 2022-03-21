@@ -13,8 +13,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -78,13 +80,52 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
 
         PostObject model = list.get(position);
-
         holder.tv_date.setText(model.getDate());
         holder.tv_name.setText(model.getItem_name());
         holder.tv_cost.setText(model.getItem_price());
         holder.tv_qty.setText(model.getItem_qty());
 
         holder.imageViewContainer.removeAllViews();
+
+
+        //pop-up menu code here
+
+        holder.tv_options.setOnClickListener(v->{
+
+            PopupMenu popup = new PopupMenu(context, holder.tv_options);
+
+            popup.inflate(R.menu.post_options_menu);
+            //adding click listener
+            popup.setOnMenuItemClickListener(item -> {
+
+                //todo add ids in menu xml and complete below
+
+//                    switch (item.getItemId()) {
+//                        case R.id.menu1:
+//                            //handle menu1 click
+//                            return true;
+//                        case R.id.menu2:
+//                            //handle menu2 click
+//                            return true;
+//                        case R.id.menu3:
+//                            //handle menu3 click
+//                            return true;
+//                        default:
+//                            return false;
+//                    }
+
+                Toast.makeText(context,
+                        "item clicked "+ item.getTitle(),
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            });
+            //displaying the popup
+            popup.show();
+
+
+        });
+
+
 
         if(model.getDistance().isEmpty()){
             holder.tv_distance.setVisibility(View.GONE);
@@ -404,7 +445,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tv_name, tv_qty, tv_cost, tv_date;
+        public TextView tv_name, tv_qty, tv_cost, tv_date, tv_options;
         public LinearLayout imageViewContainer;
         public Button btn_buy;
         public ProgressBar pg;
@@ -418,6 +459,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             tv_cost = itemView.findViewById(R.id.post_tv_item_price);
             tv_date = itemView.findViewById(R.id.post_date);
             tv_distance = itemView.findViewById(R.id.post_distance);
+            tv_options = itemView.findViewById(R.id.post_tv_options);
 
             imageViewContainer = itemView.findViewById(R.id.post_image_container);
 

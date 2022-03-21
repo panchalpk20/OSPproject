@@ -48,4 +48,14 @@ public class OrderItem {
     public void setCost(String cost) {
         this.cost = cost;
     }
+
+    @Override
+    public String toString() {
+        return "OrderItem:" +
+                "\nname='" + name + '\'' +
+                ",\nqty='" + qty + '\'' +
+                ", \ncost='" + cost + '\'' +
+                ", \npostId='" + postId + '\'' +
+                '}';
+    }
 }

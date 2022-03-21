@@ -63,6 +63,8 @@
     <string name="cash_on_delivery">Cash on Delivery</string>
     <string name="Delete">Delete Post</string>
     <string name="sort_by_distance">Sort by distance</string>
+    <string name="my_orders">My Orders</string>
+    <string name="_8942">⋮</string>
     <string-array name="cities">
         <item>Pune</item>
         <item>Mumbai</item>

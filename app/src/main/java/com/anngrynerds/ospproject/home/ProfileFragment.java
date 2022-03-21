@@ -112,6 +112,14 @@ public class ProfileFragment extends Fragment {
         }
 
 
+        view.findViewById(R.id.profile_page_btn_myorders).setOnClickListener(v->{
+
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.main_activity_frame_layout, OrdersFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
+        });
+
         view.findViewById(R.id.profile_page_btn_).setOnClickListener(v -> {
 
             Intent i = new Intent(context, ProfileFill.class);

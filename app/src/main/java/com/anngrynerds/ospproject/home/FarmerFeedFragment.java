@@ -1,13 +1,19 @@
 package com.anngrynerds.ospproject.home;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -25,6 +31,8 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.anngrynerds.ospproject.R;
@@ -46,11 +54,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -65,6 +75,8 @@ public class FarmerFeedFragment extends Fragment {
     private static final String TAG = "FarmerFeed";
 
     ActivityResultLauncher<Intent> imageSelectActivityLaunch;
+    ActivityResultLauncher<Intent> imageCaptureActivityLaunch;
+    ActivityResultLauncher<Intent> cropImageActivityResult;
     ArrayList<String> filePathList = new ArrayList<>();
     ArrayList<String> downloadUrl = new ArrayList<>();
     Context context;
@@ -97,8 +109,25 @@ public class FarmerFeedFragment extends Fragment {
     TextView pgMsg;
     Dialog dialog;
 
+    private final ActivityResultLauncher<String[]> activityResultLaucherForPermissions;
+
+
     public FarmerFeedFragment() {
         // Required empty public constructor
+
+
+        activityResultLaucherForPermissions = registerForActivityResult(
+                new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+            Log.e("activityResultLauncher", ""+result.toString());
+            boolean areAllGranted = true;
+            for(Boolean b : result.values()) {
+                areAllGranted = areAllGranted && b;
+            }
+            if(areAllGranted) {
+                takeImagefromCamera();
+            }
+        });
+
     }
 
     public static FarmerFeedFragment newInstance() {
@@ -161,6 +190,45 @@ public class FarmerFeedFragment extends Fragment {
             bottomSheetDialog.show();
         });
 
+
+        cropImageActivityResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),result->{
+
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Bitmap cropImage = loadFromUri(resultProvider);
+                        filePathList.add(resultProvider.toString());
+                        ImageView imageView = new ImageView(context);
+                        imageView.setImageBitmap(cropImage);
+                        ViewGroup.LayoutParams params = bs_imageContainer.getLayoutParams();
+                        params.height = (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                250,
+                                getResources().getDisplayMetrics());
+                        params.width = (int) TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                400,
+                                getResources().getDisplayMetrics());
+
+                        imageView.setLayoutParams(params);
+                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        bs_imageContainer.addView(imageView);
+
+                    }
+
+
+                });
+
+        imageCaptureActivityLaunch = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        //Bitmap takenImage = loadFromUri(intermediateProvider);
+                        onCropImage();
+                    }
+
+                });
+
         imageSelectActivityLaunch = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -209,11 +277,109 @@ public class FarmerFeedFragment extends Fragment {
 
                             }
                         }
+                        else {
+//                            Log.e(TAG, "onCreateView: "+data.getData() );
+                            Uri uri = null;
+                            if (data != null) {
+                                uri = data.getData();
+                                filePathList.add(uri.toString());
+                                //Log.e(TAG, "FilePath " + filePath.toString());
+                                Bitmap bitmap = null;
+                                try {
+                                    bitmap = MediaStore
+                                            .Images
+                                            .Media
+                                            .getBitmap(
+                                                    context.getContentResolver(),
+                                                    uri);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                ImageView imageView = new ImageView(context);
+                                imageView.setImageBitmap(bitmap);
+                                ViewGroup.LayoutParams params = bs_imageContainer.getLayoutParams();
+                                params.height = (int) TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        250,
+                                        getResources().getDisplayMetrics());
+                                params.width = (int) TypedValue.applyDimension(
+                                        TypedValue.COMPLEX_UNIT_DIP,
+                                        400,
+                                        getResources().getDisplayMetrics());
+
+                                imageView.setLayoutParams(params);
+                                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                bs_imageContainer.addView(imageView);
+
+                            }
+                        }
 
                     }
                 });
 
         return view;
+    }
+
+
+    private void onCropImage() {
+        context.grantUriPermission("com.android.camera",
+                intermediateProvider, Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(intermediateProvider, "image/*");
+
+        List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent, 0);
+
+        int size = 0;
+
+        if(list != null) {
+            context.grantUriPermission(list.get(0).activityInfo.packageName, intermediateProvider, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            size = list.size();
+        }
+
+        if (size == 0) {
+            Toast.makeText(context, "Error, wasn't taken image!", Toast.LENGTH_SHORT).show();
+        } else {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.putExtra("crop", "true");
+
+            intent.putExtra("scale", true);
+
+            File photoFile = getPhotoFileUri(resultName);
+            resultProvider = FileProvider.getUriForFile(context, "com.photostream.crop.fileprovider", photoFile);
+
+            intent.putExtra("return-data", false);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, resultProvider);
+            intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
+            Intent cropIntent = new Intent(intent);
+            ResolveInfo res = list.get(0);
+            cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            cropIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            context.grantUriPermission(res.activityInfo.packageName, resultProvider, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            cropIntent.setComponent(new ComponentName(res.activityInfo.packageName, res.activityInfo.name));
+            cropImageActivityResult.launch(cropIntent);
+        }
+    }
+
+
+    public Bitmap loadFromUri(Uri photoUri) {
+        Bitmap image = null;
+        try {
+            if(Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1){
+                // on newer versions of Android, use the new decodeBitmap method
+                ImageDecoder.Source source = ImageDecoder.createSource(context.getContentResolver(), photoUri);
+                image = ImageDecoder.decodeBitmap(source);
+            } else {
+                // support older versions of Android by using getBitmap
+                image = MediaStore.Images.Media.getBitmap(context.getContentResolver(), photoUri);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
     private void setImageCoverAccToTime() {
@@ -388,6 +554,21 @@ public class FarmerFeedFragment extends Fragment {
             selectImage();
         });
 
+        bottomSheetDialog.findViewById(R.id.bs_post_btn_takeImage).setOnClickListener(v->{
+
+            if (ActivityCompat.checkSelfPermission(context,
+                    Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+
+                String[] appPerms = new String[]{Manifest.permission.CAMERA};
+                this.activityResultLaucherForPermissions.launch(appPerms);
+
+            }else {
+
+                takeImagefromCamera();
+
+            }
+        });
+
         bottomSheetDialog.findViewById(R.id.bs_post_btn_submit).setOnClickListener(v -> {
 
             Log.e(TAG, "FilePath " + filePathList.toString());
@@ -419,6 +600,34 @@ public class FarmerFeedFragment extends Fragment {
             }
         });
 
+    }
+    Uri intermediateProvider;
+    Uri resultProvider;
+    public String intermediateName = "1.jpg";
+    public String resultName = "2.jpg";
+    public final String APP_TAG = "crop";
+
+    private void takeImagefromCamera() {
+
+
+        Toast.makeText(context, "camera permission granted", Toast.LENGTH_LONG).show();
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+
+        File photoFile = getPhotoFileUri(intermediateName);
+        intermediateProvider = FileProvider.getUriForFile(context,
+                "com.photostream.crop.fileprovider",
+                photoFile);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, intermediateProvider);
+        imageCaptureActivityLaunch.launch(cameraIntent);
+    }
+
+
+    public File getPhotoFileUri(String fileName) {
+        File mediaStorageDir = new File(context.getExternalFilesDir(""), APP_TAG);
+        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
+            Log.d("APP_TAG", "failed to create directory");
+        }
+        return new File(mediaStorageDir.getPath() + File.separator + fileName);
     }
 
     private void createPost(String str_item_name,

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.adapters.CustomerOrderAdapter;
+import com.anngrynerds.ospproject.adapters.FarmerOrderAdapter;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.pojo.Order;
 import com.anngrynerds.ospproject.pojo.User;
@@ -54,6 +55,7 @@ public class OrdersFragment extends Fragment {
     Context context;
     User u;
     CustomerOrderAdapter adapter;
+    FarmerOrderAdapter adapter1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,15 +70,20 @@ public class OrdersFragment extends Fragment {
         u = gson.fromJson(json1, User.class);
 
 
-        adapter = new CustomerOrderAdapter(context, list);
-        rc = view.findViewById(R.id.order_fragment_recyclerView);
-        rc.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-        rc.setAdapter(adapter);
+
 
         if(u.getRole().equalsIgnoreCase(Constantss.ROLE_CUSTOMER)){
-            loadFarmerOrders();
+            loadCustomerOrders();
+            adapter = new CustomerOrderAdapter(context, list);
+            rc = view.findViewById(R.id.order_fragment_recyclerView);
+            rc.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            rc.setAdapter(adapter);
         }else{
             loadFarmersOrders();
+            adapter1 = new FarmerOrderAdapter(context, list);
+            rc = view.findViewById(R.id.order_fragment_recyclerView);
+            rc.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+            rc.setAdapter(adapter1);
         }
 
 
@@ -99,7 +106,7 @@ public class OrdersFragment extends Fragment {
                             }
                         }
 
-                        adapter.notifyDataSetChanged();
+                        adapter1.notifyDataSetChanged();
                     }
 
                     @Override
@@ -110,7 +117,7 @@ public class OrdersFragment extends Fragment {
 
     }
 
-    private void loadFarmerOrders() {
+    private void loadCustomerOrders() {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(u.getCity())

@@ -36,7 +36,9 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class FeedFragment extends Fragment {
+public class
+
+FeedFragment extends Fragment {
 
     private static final String TAG = "FeedFragment";
 

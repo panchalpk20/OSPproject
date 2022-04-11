@@ -56,8 +56,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     Context context;
     ArrayList<PostObject> list;
     boolean isFarmer;
-    User resultUser;
+    //    User resultUser;
     private String TAG = "FeedAdapter";
+    User u;
+    String name;
 
     public FeedAdapter(ArrayList<PostObject> list, Context context, boolean isFarmer) {
         this.list = list;
@@ -86,6 +88,32 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.tv_qty.setText(model.getItem_qty());
 
         holder.imageViewContainer.removeAllViews();
+
+
+        fetchUserForPost(model);
+//
+        SharedPreferences prefs = context.
+                getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = prefs.getString(Constantss.sharedPrefUserKey, "");
+        User currentUser = gson.fromJson(json, User.class);
+        String phno = model.getPost_id().split("-")[0];
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        ref.child(currentUser.getCity())
+                .child(Constantss.ROLE_FARMER)
+                .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                u = snapshot.getValue(User.class);
+//                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
+                holder.tv_username.setText(u.getName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         //pop-up menu code here
@@ -138,7 +166,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         holder.pg.setVisibility(View.VISIBLE);
         if(model.getFilePathList() != null)
-        for (String url : model.getFilePathList()) {
+            for (String url : model.getFilePathList()) {
 
 //               // Log.e("feedAdp: ", "url: " + url);
 
@@ -207,7 +235,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.btn_buy.setOnClickListener(v -> {
                 //todo implement buy
 
-                User u = fetchUserForPost(model);
+//                User u = null;
+//
+//                while(u == null){
+//                    u = fetchUserForPost(model);
+//                }
+
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(context);
                 bottomSheetDialog.setContentView(R.layout.bottom_sheet_buy);
 
@@ -225,8 +258,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 Button bs_btn_addToCart = bottomSheetDialog.findViewById(R.id.bs_buy_btn_addtocart);
                 Button bs_btn_putOrder = bottomSheetDialog.findViewById(R.id.bs_buy_btn_buy);
 
-                String name = u != null ? u.getName() : "";
+                 name = u != null ? u.getName() : "";
                 String userMobileNo = u != null ? u.getMobNo() : "null";
+
                 assert bs_pg != null;
                 for (String url : model.getFilePathList()) {
 
@@ -283,6 +317,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
                 assert bs_tv_soldby != null;
                 bs_tv_soldby.setText(MessageFormat.format("Sold By {0}", name));
+                //holder.tv_username.setText(MessageFormat.format("Sold By {0}", name));
                 assert bs_tv_itemName != null;
                 bs_tv_itemName.setText(model.getItem_name());
                 assert bs_tv_stock != null;
@@ -319,18 +354,17 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 assert bs_btn_putOrder != null;
                 bs_btn_putOrder.setOnClickListener(v1 -> {
 //                        todo Implement method
-                        putOrder(model,
-                                bs_tv_qtyTobuy.getText().toString(),
-                                userMobileNo);
+                    putOrder(model,
+                            bs_tv_qtyTobuy.getText().toString(),
+                            userMobileNo);
 
-                        bottomSheetDialog.dismiss();
+                    bottomSheetDialog.dismiss();
                 });
 
                 bottomSheetDialog.show();
 
 
             });
-
         }
 
 
@@ -344,8 +378,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         Gson gson = new Gson();
         String json = prefs.getString(Constantss.sharedPrefUserKey, "");
         User currentUser = gson.fromJson(json, User.class);
-        resultUser = null;
-
 
         Date c = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.getDefault());
@@ -369,14 +401,13 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                resultUser = snapshot.getValue(User.class);
+                u = snapshot.getValue(User.class);
 //                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
-
                 Order order = new Order(orderItems,
                         String.valueOf(orderItems.size()),
                         totalCost,
                         orderId,
-                        resultUser.getMobNo(),  //mobile number of seller
+                        u.getMobNo(),  //mobile number of seller
                         "ChangeDWhilePuttingOrder"  //mobile number of buyer
                 );
 
@@ -407,14 +438,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     }
 
-    private User fetchUserForPost(PostObject model) {
+    private void fetchUserForPost(PostObject model) {
         SharedPreferences prefs = context.
                 getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
         Gson gson = new Gson();
         String json = prefs.getString(Constantss.sharedPrefUserKey, "");
         User currentUser = gson.fromJson(json, User.class);
-        resultUser = null;
+        u = null;
 
         String phno = model.getPost_id().split("-")[0];
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -423,7 +454,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                resultUser = snapshot.getValue(User.class);
+                u = snapshot.getValue(User.class);
 //               // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
 
             }
@@ -433,7 +464,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
             }
         });
-        return resultUser;
+//        return resultUser;
 
 
     }
@@ -445,7 +476,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tv_name, tv_qty, tv_cost, tv_date, tv_options;
+        public TextView tv_username,tv_name, tv_qty, tv_cost, tv_date, tv_options;
         public LinearLayout imageViewContainer;
         public Button btn_buy;
         public ProgressBar pg;
@@ -453,7 +484,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            tv_username=itemView.findViewById(R.id.userName);
             tv_name = itemView.findViewById(R.id.post_tv_item_name);
             tv_qty = itemView.findViewById(R.id.post_tv_item_count);
             tv_cost = itemView.findViewById(R.id.post_tv_item_price);

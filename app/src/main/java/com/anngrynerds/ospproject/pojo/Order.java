@@ -4,12 +4,16 @@ import java.util.ArrayList;
 
 public class Order {
     ArrayList <OrderItem> list;
+    ArrayList <PostObject> list1;
 
+    String name;
     String totalItems;
     String totalCost;
     String orderId;
     String fromId;
     String toId;
+    ArrayList<String> filePathList;
+
 
     public Order() {
     }
@@ -22,7 +26,18 @@ public class Order {
         this.fromId = fromId;
         this.toId = toId;
     }
+    public Order(ArrayList<PostObject>postObjects,ArrayList<String> file){
+        this.filePathList=file;
+        this.list1=postObjects;
 
+    }
+    public ArrayList<String> getFilePathList() {
+        return filePathList;
+    }
+
+    public void setFilePathList(ArrayList<String> filePathList) {
+        this.filePathList = filePathList;
+    }
     public String getFromId() {
         return fromId;
     }

@@ -48,15 +48,6 @@
             android:textAllCaps="false"
             />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bs_post_btn_takeImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@color/buttonBackground2"
-            android:text="@string/capture"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/bs_post_ipl_item_name"

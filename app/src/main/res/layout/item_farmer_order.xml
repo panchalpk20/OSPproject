@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="12dp"
+    app:contentPadding="5dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_name"
+            android:text="user name"
+            android:textSize="15dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="2dp"
+                android:id="@+id/image_post"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp"
+                >
+                <TextView
+                    android:id="@+id/post_item_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text="Name"
+                    android:background="@drawable/text_view_style"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center|start"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:layout_marginTop="6dp"
+                    android:textColor="@color/textColor"
+                    />
+                <TextView
+                    android:id="@+id/post_item_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:text="Qty"
+                    android:background="@drawable/text_view_style"
+                    android:textSize="@dimen/normalText"
+                    android:gravity="center|start"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="3dp"
+                    android:textColor="@color/textColor"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/order_completed"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:text="Order Sent"
+                    android:textSize="12dp"
+                    android:backgroundTint="@color/buttonBackground"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_horizontal"
+                    />
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

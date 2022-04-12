@@ -55,6 +55,7 @@ FeedFragment extends Fragment {
     SharedPreferences mPrefs;
     TextView pgMsg;
     Dialog dialog;
+
     public FeedFragment() {
         // Required empty public constructor
     }

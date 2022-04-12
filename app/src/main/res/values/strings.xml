@@ -32,7 +32,7 @@
     <string name="select_your_city">Select Your city</string>
     <string name="upload_image">Upload Image</string>
     <string name="quantity">Quantity in kg</string>
-    <string name="price">Price in Rs per KG</string>
+    <string name="price">Price</string>
     <string name="post">Post</string>
     <string name="type_here_to_search">Type here to search…</string>
     <string name="replace_pictures">Replace Pictures</string>
@@ -41,7 +41,6 @@
     <string name="price_per_kg">Price (per KG)</string>
     <string name="place_order">Place Order</string>
     <string name="add_to_basket">Add to Basket</string>
-    <string name="order_details">Order Details</string>
     <string name="item_name">Item Name</string>
     <string name="cost">Cost</string>
     <string name="total">Total</string>
@@ -68,6 +67,15 @@
     <string name="capture">Capture</string>
     <string name="completed">Completed</string>
     <string name="Cancel">Cancel Order</string>
+    <string name="qty">qty</string>
+    <string name="call_seller">Call Seller</string>
+    <string name="address_of_seller">Address of seller</string>
+    <string name="address_of_buyer">Address of the Buyer</string>
+    <string name="order_details">Order Details</string>
+    <string name="call_buyer">Call Buyer</string>
+    <string name="report_this_post">Report this Post</string>
+    <string name="this_post_has_been_marked_as_wrong">This post has been marked as wrong</string>
+    <string name="notifications">Notifications</string>
     <string-array name="cities">
         <item>Pune</item>
         <item>Mumbai</item>

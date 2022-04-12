@@ -1,87 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="12dp"
     app:contentPadding="5dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/user_name"
-            android:text="user name"
-            android:textSize="15dp"
-            />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp">
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginLeft="2dp"
-                android:id="@+id/image_post"/>
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_marginLeft="15dp"
-                >
-                <TextView
-                    android:id="@+id/post_item_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:text="Name"
-                    android:background="@drawable/text_view_style"
-                    android:textSize="@dimen/normalText"
-                    android:gravity="center|start"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:layout_marginTop="6dp"
-                    android:textColor="@color/textColor"
-                    />
-                <TextView
-                    android:id="@+id/post_item_count"
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:text="Qty"
-                    android:background="@drawable/text_view_style"
-                    android:textSize="@dimen/normalText"
-                    android:gravity="center|start"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="3dp"
-                    android:textColor="@color/textColor"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_marginLeft="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-                <Button
-                    android:id="@+id/order_completed"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:text="Order Sent"
-                    android:textSize="12dp"
-                    android:backgroundTint="@color/buttonBackground"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_horizontal"
-                    />
+            android:weightSum="5">
 
+            <TextView
+                android:id="@+id/item_farmer_order_soldby"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:text="sold To"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
 
-            </LinearLayout>
-
+            <TextView
+                android:id="@+id/item_farmer_order_status"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:text="ORDER STATUS"
+                android:gravity="end"
+                tools:ignore="HardcodedText"
+                android:textSize="@dimen/normalText"
+                />
 
         </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/item_farmer_order_tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="1">
+
+            <TableRow tools:ignore="UselessParent">
+
+                <TextView
+                    android:layout_width="70dp"
+                    android:gravity="start"
+                    android:text="Image"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_marginStart="5dp"
+                    android:text="@string/name"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:gravity="center"
+                    android:text="@string/qty"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:gravity="center"
+                    android:text="@string/price"
+                    android:textSize="@dimen/normalText"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow tools:ignore="UselessParent">
+
+                <ImageView
+                    android:id="@+id/item_farmer_order_image"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:gravity="start"
+                    android:src="@drawable/img_city" />
+
+                <TextView
+                    android:id="@+id/item_farmer_order_name"
+                    android:layout_gravity="start|center"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/name"
+                    android:textSize="@dimen/normalText" />
+
+                <TextView
+                    android:id="@+id/item_farmer_order_qty"
+                    android:layout_width="60dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/qty"
+                    android:textSize="@dimen/normalText" />
+
+                <TextView
+                    android:id="@+id/item_farmer_order_price"
+                    android:layout_width="60dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/price"
+                    android:textSize="@dimen/normalText" />
+
+            </TableRow>
+
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/totalCost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TotalCost of order"
+            android:textColor="@color/black"
+            android:textSize="@dimen/normalText"
+            tools:ignore="HardcodedText" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/item_farmer_order_btn_completed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="2dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/buttonBackground"
+                android:text="Order Sent/Shipped"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/item_farmer_order_btn_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="2dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/error"
+                android:text="@string/Cancel"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

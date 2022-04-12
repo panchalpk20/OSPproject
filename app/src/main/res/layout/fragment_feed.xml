@@ -28,8 +28,6 @@
                 android:autofillHints="none"
                 android:inputType="text"
                 android:textSize="18sp"
-                android:backgroundTint="
-"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
                 android:layout_weight="10"

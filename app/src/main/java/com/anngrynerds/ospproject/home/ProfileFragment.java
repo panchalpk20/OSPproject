@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -143,7 +142,7 @@ public class ProfileFragment extends Fragment {
                         //   Log.e(TAG, "loading farmers posts: "+snapshot.getChildrenCount() );
                         list.clear();
                         for (DataSnapshot s : snapshot.getChildren()) {
-                            Log.e(TAG, "Feed" + s.toString());
+                     //       Log.e(TAG, "Feed" + s.toString());
                             PostObject p = s.getValue(PostObject.class);
                                 if (p != null)
                                     if (p.getFilePathList() != null)

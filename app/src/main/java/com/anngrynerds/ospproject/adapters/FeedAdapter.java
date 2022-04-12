@@ -3,9 +3,12 @@ package com.anngrynerds.ospproject.adapters;
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anngrynerds.ospproject.CheckOut.CheckOutActivity;
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.pojo.Order;
-import com.anngrynerds.ospproject.pojo.OrderItem;
 import com.anngrynerds.ospproject.pojo.PostObject;
 import com.anngrynerds.ospproject.pojo.User;
 import com.bumptech.glide.Glide;
@@ -90,6 +92,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.imageViewContainer.removeAllViews();
 
 
+
         fetchUserForPost(model);
 //
         SharedPreferences prefs = context.
@@ -97,61 +100,11 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         Gson gson = new Gson();
         String json = prefs.getString(Constantss.sharedPrefUserKey, "");
         User currentUser = gson.fromJson(json, User.class);
+
         String phno = model.getPost_id().split("-")[0];
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        ref.child(currentUser.getCity())
-                .child(Constantss.ROLE_FARMER)
-                .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                u = snapshot.getValue(User.class);
-//                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
-                holder.tv_username.setText(u.getName());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
 
 
-        //pop-up menu code here
-
-        holder.tv_options.setOnClickListener(v->{
-
-            PopupMenu popup = new PopupMenu(context, holder.tv_options);
-
-            popup.inflate(R.menu.post_options_menu);
-            //adding click listener
-            popup.setOnMenuItemClickListener(item -> {
-
-                //todo add ids in menu xml and complete below
-
-//                    switch (item.getItemId()) {
-//                        case R.id.menu1:
-//                            //handle menu1 click
-//                            return true;
-//                        case R.id.menu2:
-//                            //handle menu2 click
-//                            return true;
-//                        case R.id.menu3:
-//                            //handle menu3 click
-//                            return true;
-//                        default:
-//                            return false;
-//                    }
-
-                Toast.makeText(context,
-                        "item clicked "+ item.getTitle(),
-                        Toast.LENGTH_SHORT).show();
-                return false;
-            });
-            //displaying the popup
-            popup.show();
-
-
-        });
 
 
 
@@ -220,16 +173,103 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
 //    //    Log.e(TAG, "onBindViewHolder: " + isFarmer);
         if (isFarmer) {
+
+            holder.tv_options.setText(MessageFormat.format("{0}", model.getReportCount()));
+            holder.tv_username.setVisibility(View.GONE);
+
+            if(model.getReportCount()>10){
+                holder.tv_options.setTextColor(Color.RED);
+                holder.tv_username.setText("This post has been disabled");
+                holder.tv_username.setVisibility(View.VISIBLE);
+            }
+
+
+
+
+            Log.e(TAG, "onBindViewHolder: "+holder.tv_options.getText().toString() );
+
             holder.btn_buy.setText(R.string.Delete);
             holder.btn_buy.setOnClickListener(v -> {
                 //implement delete post
-                int newPosition = holder.getAdapterPosition();
-                list.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(newPosition, list.size());
+
+
+
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            ref.child(u.getCity()).child(Constantss.postsNode).child(model.getPost_id()).removeValue();
+
+                            int newPosition = holder.getAdapterPosition();
+                            list.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(newPosition, list.size());
+
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Confirm Delete Action");
+                builder.setMessage("You want to delete this post?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+
+
 
             });
         } else {
+
+            ref.child(currentUser.getCity())
+                    .child(Constantss.ROLE_FARMER)
+                    .child(phno).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    u = snapshot.getValue(User.class);
+//                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
+                    holder.tv_username.setText(u.getName());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+            //pop-up menu code here
+
+            if(model.getReportCount()>10){
+                holder.btn_buy.setText(R.string.this_post_has_been_marked_as_wrong);
+                holder.btn_buy.setClickable(false);
+                holder.tv_options.setClickable(false);
+            }
+
+            holder.tv_options.setOnClickListener(v->{
+
+                PopupMenu popup = new PopupMenu(context, holder.tv_options);
+
+                popup.inflate(R.menu.post_options_menu);
+                //adding click listener
+                popup.setOnMenuItemClickListener(item -> {
+
+                    //todo add ids in menu xml and complete below
+
+                    if (item.getItemId() == R.id.post_option_report) {
+                        ref.child(currentUser.getCity()).child(Constantss.postsNode)
+                                .child(model.getPost_id()).child("reportCount").setValue(model.getReportCount() + 1);
+                        return true;
+                    }
+                    return false;
+
+                });
+                //displaying the popup
+                popup.show();
+
+
+            });
+
 
             holder.btn_buy.setText("Buy");
             holder.btn_buy.setOnClickListener(v -> {
@@ -368,6 +408,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         }
 
 
+
+
+
     }
 
     private void putOrder(PostObject model, String qtyToBuy , String sellerNumber) {
@@ -387,12 +430,6 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
         String totalCost = model.getItem_price();
 
-        ArrayList<OrderItem> orderItems = new ArrayList<>();
-        orderItems.add(new OrderItem(model.getItem_name(),
-                qtyToBuy,
-                model.getItem_price(),
-                model.getPost_id()
-        ));
 
         String phno = model.getPost_id().split("-")[0];
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
@@ -402,14 +439,24 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 u = snapshot.getValue(User.class);
-//                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
-                Order order = new Order(orderItems,
-                        String.valueOf(orderItems.size()),
-                        totalCost,
-                        orderId,
-                        u.getMobNo(),  //mobile number of seller
-                        "ChangeDWhilePuttingOrder"  //mobile number of buyer
-                );
+                // Log.e(TAG, "Fetching user : " + (resultUser != null ? resultUser.toString() : snapshot.getChildrenCount()));
+//                Order order = new Order(orderItems,
+//                        String.valueOf(orderItems.size()),
+//                        totalCost,
+//                        orderId,
+//                        u.getMobNo(),  //mobile number of seller
+//                        "ChangeDWhilePuttingOrder"  //mobile number of buyer
+//                );
+
+                Order order = new Order(orderId,
+                        u.getMobNo(),
+                        "ChangeHwileputting order",
+                        model.getItem_name(),
+                        qtyToBuy,
+                        model.getItem_price(),
+                        model.getPost_id(),
+                        Constantss.ORDER_STATUS_PROCESSING
+                        );
 
                 Gson gson = new Gson();
                 String json = gson.toJson(order);

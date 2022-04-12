@@ -1,43 +1,56 @@
 package com.anngrynerds.ospproject.pojo;
 
-import java.util.ArrayList;
-
 public class Order {
-    ArrayList <OrderItem> list;
-    ArrayList <PostObject> list1;
 
-    String name;
-    String totalItems;
-    String totalCost;
     String orderId;
     String fromId;
     String toId;
-    ArrayList<String> filePathList;
 
+    String name;
+    String qty;
+    String cost;
+    String postId;
+
+    String orderStatus;
 
     public Order() {
     }
 
-    public Order(ArrayList<OrderItem> list, String totalItems, String totalCost, String orderId, String fromId, String toId) {
-        this.list = list;
-        this.totalItems = totalItems;
-        this.totalCost = totalCost;
+//    public Order(ArrayList<OrderItem> list, String totalItems, String totalCost, String orderId, String fromId, String toId) {
+//        this.list = list;
+//        this.totalItems = totalItems;
+//        this.totalCost = totalCost;
+//        this.orderId = orderId;
+//        this.fromId = fromId;
+//        this.toId = toId;
+//    }
+
+
+    public Order(String orderId,
+                 String fromId,
+                 String toId,
+                 String name, String qty, String cost, String postId,
+                 String orderStatus
+                 ) {
         this.orderId = orderId;
         this.fromId = fromId;
         this.toId = toId;
-    }
-    public Order(ArrayList<PostObject>postObjects,ArrayList<String> file){
-        this.filePathList=file;
-        this.list1=postObjects;
-
-    }
-    public ArrayList<String> getFilePathList() {
-        return filePathList;
+        this.name = name;
+        this.qty = qty;
+        this.cost = cost;
+        this.postId = postId;
+        this.orderStatus = orderStatus;
     }
 
-    public void setFilePathList(ArrayList<String> filePathList) {
-        this.filePathList = filePathList;
+
+    public String getOrderStatus() {
+        return orderStatus;
     }
+
+    public void setOrderStatus(String orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     public String getFromId() {
         return fromId;
     }
@@ -54,30 +67,6 @@ public class Order {
         this.toId = toId;
     }
 
-    public ArrayList<OrderItem> getList() {
-        return list;
-    }
-
-    public void setList(ArrayList<OrderItem> list) {
-        this.list = list;
-    }
-
-    public String getTotalItems() {
-        return totalItems;
-    }
-
-    public void setTotalItems(String totalItems) {
-        this.totalItems = totalItems;
-    }
-
-    public String getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(String totalCost) {
-        this.totalCost = totalCost;
-    }
-
     public String getOrderId() {
         return orderId;
     }
@@ -86,15 +75,48 @@ public class Order {
         this.orderId = orderId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getQty() {
+        return qty;
+    }
+
+    public void setQty(String qty) {
+        this.qty = qty;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
-                "\nlist=" + list +
-                ", \ntotalItems='" + totalItems + '\'' +
-                ", \ntotalCost='" + totalCost + '\'' +
-                ", \norderId='" + orderId + '\'' +
-                ", \nfromId='" + fromId + '\'' +
-                ", \ntoId='" + toId + '\'' +
+                "orderId='" + orderId + '\'' +
+                ", fromId='" + fromId + '\'' +
+                ", toId='" + toId + '\'' +
+                ", name='" + name + '\'' +
+                ", qty='" + qty + '\'' +
+                ", cost='" + cost + '\'' +
+                ", postId='" + postId + '\'' +
                 '}';
     }
 }

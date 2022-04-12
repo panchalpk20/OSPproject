@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="8dp"
+    >
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/order_details"
+        android:gravity="center"
+        android:textSize="22sp"
+        android:padding="4dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/bs_cust_order_soldby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sold by ..."
+        android:textSize="@dimen/normalText"
+        android:textColor="@color/textColor"
+
+        />
+
+
+    <ProgressBar
+        android:id="@+id/bs_cust_order_pg"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/bs_cust_order_imagecontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            />
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/bs_cust_order_itemname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Item Name"
+        android:textSize="22sp"
+        android:textColor="@color/textColor"/>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:baselineAligned="false"
+        >
+
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="@drawable/style_tv"
+            android:layout_marginEnd="3dp"
+            android:padding="4dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/quantity"
+                android:textSize="@dimen/small_text"
+                android:textColor="@color/textColor"
+                />
+
+            <TextView
+                android:id="@+id/bs_cust_order_itemqty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:autofillHints="name"
+                android:text="stock"
+                android:textSize="@dimen/normalText"
+                android:textColor="@color/textColor"
+                app:drawableEndCompat="@drawable/ic_kg" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:background="@drawable/style_tv"
+            android:layout_marginStart="3dp"
+            android:padding="4dp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/price_per_kg"
+                android:textSize="@dimen/small_text"
+                android:textColor="@color/textColor"
+                />
+
+            <TextView
+                android:id="@+id/bs_cust_order_itemprice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:padding="4dp"
+                android:text="price/kg"
+                android:textSize="@dimen/normalText"
+                android:textColor="@color/textColor"
+                app:drawableEndCompat="@drawable/ic_rskg" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/style_tv"
+        android:padding="4dp"
+        android:layout_marginTop="6dp"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/total"
+            android:textSize="@dimen/small_text"
+            android:textColor="@color/textColor"
+            />
+
+        <TextView
+            android:id="@+id/bs_cust_order_totalprice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="name"
+            android:text="Total"
+            android:padding="4dp"
+            android:textSize="@dimen/normalText"
+            android:textColor="@color/textColor"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/style_tv"
+        android:padding="4dp"
+        android:layout_marginTop="6dp"
+        >
+        <TextView
+            android:id="@+id/bs_cust_order_AddressLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/address_of_seller"
+            android:textSize="@dimen/small_text"
+            android:textColor="@color/textColor"
+            />
+
+
+        <TextView
+        android:id="@+id/bs_cust_order_sellerAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:text="Address"
+        android:padding="4dp"
+        android:textSize="@dimen/normalText"
+        android:textColor="@color/textColor"
+        tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bs_cust_order_btn_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/style_btn_placeorder"
+        android:text="@string/call_seller"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:layout_marginTop="6dp"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"
+        />
+
+</LinearLayout>

@@ -19,7 +19,6 @@ import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.anngrynerds.ospproject.pojo.Order;
-import com.anngrynerds.ospproject.pojo.OrderItem;
 import com.anngrynerds.ospproject.pojo.PostObject;
 import com.anngrynerds.ospproject.pojo.User;
 import com.google.firebase.database.DataSnapshot;
@@ -62,45 +61,43 @@ public class CheckOutActivity extends AppCompatActivity {
         String json = mPrefs.getString(Constantss.sharedPrefUserKey, "");
         user = gson.fromJson(json, User.class);
 
-
         String json1 = getIntent().getStringExtra(EXTRA_OrderObject);
         order = new Gson().fromJson(json1, Order.class);
 
         order.setToId(user.getMobNo());
+        order.setOrderStatus(Constantss.ORDER_STATUS_PROCESSING);
 
         totalCost = 0;
-        for (OrderItem item : order.getList()) {
 
-            TableRow tableRow = new TableRow(context);
-            TextView name = new TextView(context);
-            name.setText(item.getName());
+        TableRow tableRow = new TableRow(context);
+        TextView name = new TextView(context);
+        name.setText(order.getName());
 
-            name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            name.setTextColor(getResources().getColor(R.color.textColor));
-            name.setGravity(Gravity.START);
+        name.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        name.setTextColor(getResources().getColor(R.color.textColor));
+        name.setGravity(Gravity.START);
 
-            TextView qty = new TextView(context);
-            qty.setText(item.getQty());
-            qty.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            qty.setTextColor(getResources().getColor(R.color.textColor));
-            qty.setGravity(Gravity.CENTER);
-
-
-            TextView cost = new TextView(context);
-            cost.setText(item.getCost());
-            cost.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            cost.setTextColor(getResources().getColor(R.color.textColor));
-            cost.setGravity(Gravity.CENTER);
+        TextView qty = new TextView(context);
+        qty.setText(order.getQty());
+        qty.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        qty.setTextColor(getResources().getColor(R.color.textColor));
+        qty.setGravity(Gravity.CENTER);
 
 
-            totalCost = totalCost + (Integer.parseInt(item.getCost()) * Integer.parseInt(item.getQty()));
+        TextView cost = new TextView(context);
+        cost.setText(order.getCost());
+        cost.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        cost.setTextColor(getResources().getColor(R.color.textColor));
+        cost.setGravity(Gravity.CENTER);
 
-            tableRow.addView(name);
-            tableRow.addView(qty);
-            tableRow.addView(cost);
 
-            tableLayout.addView(tableRow);
-        }
+        totalCost =(Integer.parseInt(order.getCost()) * Integer.parseInt(order.getQty()));
+
+        tableRow.addView(name);
+        tableRow.addView(qty);
+        tableRow.addView(cost);
+
+        tableLayout.addView(tableRow);
 
         tv_totalCost.setText(String.valueOf(totalCost));
         btn_pay.setText(MessageFormat.format("Pay{0}", totalCost));
@@ -137,8 +134,7 @@ public class CheckOutActivity extends AppCompatActivity {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 
-        for (OrderItem oi : order.getList()) {
-            String id = oi.getPostId();
+            String id = order.getPostId();
             ref.child(user.getCity()).child(Constantss.postsNode).child(id).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot s) {
@@ -149,7 +145,7 @@ public class CheckOutActivity extends AppCompatActivity {
 
                     if (postObj != null && postObj.getPost_id().equalsIgnoreCase(id)) {
                         int newValue = Integer.parseInt(postObj.getItem_qty()) ;
-                        newValue = newValue - Integer.parseInt(oi.getQty());
+                        newValue = newValue - Integer.parseInt(order.getQty());
 
                      //   Log.e(TAG, "onDataChange: "+newValue );
 
@@ -190,8 +186,6 @@ public class CheckOutActivity extends AppCompatActivity {
             });
 
             //  ref.child(Constantss.postsNode).child(id).child("item_qty").setValue(newValue);
-        }
-
 
     }
 

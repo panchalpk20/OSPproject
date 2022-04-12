@@ -3,23 +3,11 @@
 
 
     <item
+        android:id="@+id/post_option_report"
         android:enabled="true"
         android:icon="@drawable/ic_chat"
-        android:title="action1"
+        android:title="@string/report_this_post"
         />
-
-    <item
-        android:enabled="true"
-        android:icon="@drawable/ic_home"
-        android:title="Action2"
-        />
-
-    <item
-        android:enabled="true"
-        android:icon="@drawable/ic_profile"
-        android:title="action3"
-        />
-
 
 
 </menu>

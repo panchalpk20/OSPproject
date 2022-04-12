@@ -14,6 +14,7 @@ public class PostObject {
     String lat;
     String lang;
     String distance;
+    int reportCount;
 
     public PostObject(
             String str_item_name,
@@ -25,7 +26,8 @@ public class PostObject {
             String post_id,
             String lat,
             String lang,
-            String distance
+            String distance,
+            int reportCount
             ) {
 
 
@@ -39,8 +41,16 @@ public class PostObject {
          this.lat = lat;
          this.lang = lang;
          this.distance = distance;
+         this.reportCount = reportCount;
     }
 
+    public int getReportCount() {
+        return reportCount;
+    }
+
+    public void setReportCount(int reportCount) {
+        this.reportCount = reportCount;
+    }
 
     public String getDistance() {
         return distance;

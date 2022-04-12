@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/edit_border.xml" value="0.18981481481481483" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_baseline_notifications_24.xml" value="0.1425" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_bot_img.xml" value="0.147" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_chat_user.xml" value="0.147" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/drawable/ic_humidity.xml" value="0.2115" />
@@ -30,16 +31,21 @@
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/activity_profile_fill.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_add_post.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_buy.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/bottom_sheet_cust_order.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_edit_post.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_notifications.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/dialog_transparent_loading.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_a_i.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_farmer_feed.xml" value="0.25" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_feed.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/fragment_profile.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_bot_reply.xml" value="0.20416666666666666" />
-        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_post.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_cust_order.xml" value="0.25" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_farmer_order.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_post.xml" value="0.18" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/layout/item_user_holder.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/menu/post_options_menu.xml" value="0.20416666666666666" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.204" />
         <entry key="..\:/AndroidProjects/OSPprojectNew/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.204" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/ic_baseline_insert_photo_24.xml" value="0.2703125" />
@@ -62,7 +68,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

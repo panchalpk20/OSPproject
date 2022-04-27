@@ -10,6 +10,10 @@ public class Constantss {
     public static final String ORDER_STATUS_CANCELLED = "CANCELLED";
     public static String sharedPrefID = "com.anngrynerds.ospproject.home";
     public static String sharedPrefUserKey = "UserData";
+    public static String citypune = "Pune";
+    public static String citymumbai = "Mumbai";
+
+
 
 
     public static String postsNode = "posts";

@@ -10,16 +10,20 @@ import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Looper;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -53,13 +57,19 @@ public class SplashScreen extends AppCompatActivity{
     LocationManager locationManager;
     BottomSheetDialog bottomSheetDialog;
     private LocationRequest locationRequest;
+    double latitude ;
+    double longitude;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) getSupportActionBar().hide();
-
+        setContentView(R.layout.farmerspalsh);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
 
         phno = prefs.getString("id", "");
@@ -67,8 +77,8 @@ public class SplashScreen extends AppCompatActivity{
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(3000);
         locationRequest.setFastestInterval(1000);
+        //checkLatLang();
         getCurrentLocation();
-
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -103,12 +113,6 @@ public class SplashScreen extends AppCompatActivity{
             }
         }
 */
-
-
-
-
-
-
         }
 
 
@@ -181,7 +185,6 @@ public class SplashScreen extends AppCompatActivity{
 
         if (requestCode == 2) {
             if (resultCode == Activity.RESULT_OK) {
-
                 getCurrentLocation();
             }
         }
@@ -223,7 +226,7 @@ public class SplashScreen extends AppCompatActivity{
 
                                         } else {
                                             // changeLanguage();
-                                            startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+                                            startActivity(new Intent(SplashScreen.this, Select_language.class));
                                         }
 
                                         //AddressText.setText("Latitude: "+ latitude + "\n" + "Longitude: "+ longitude);
@@ -296,6 +299,21 @@ public class SplashScreen extends AppCompatActivity{
         return isEnabled;
 
     }
+  /*  private void checkLatLang(){
+   if(prefs.getString(Constantss.STR_Longitude,String.valueOf(longitude))!=null && prefs.getString(Constantss.STR_Latitude,String.valueOf(latitude))!=null)
+   {
+       if (FirebaseAuth.getInstance().getCurrentUser()!=null && !phno.isEmpty()) {
+           startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+       }
+       else{
+           startActivity(new Intent(SplashScreen.this, LoginActivity.class));
+       }
+   }
+   else {
+           getCurrentLocation();
+           //startActivity(new Intent(SplashScreen.this, LoginActivity.class));
 
+   }
+}*/
 
 }

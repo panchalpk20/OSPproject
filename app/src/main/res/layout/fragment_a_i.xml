@@ -2,26 +2,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:clipToPadding="false"
     android:focusableInTouchMode="true"
-    tools:context=".home.AIChatBot.AIFragment"
-    >
+    tools:context=".home.AIChatBot.AIFragment">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:cardBackgroundColor="#FFA6EF50"
 
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/askquestionchatbot"
+            android:textSize="18dp"
+            android:fontFamily="sans-serif-smallcaps"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+
+            />
+    </androidx.cardview.widget.CardView>
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:id="@+id/rv_messagaesview"
         android:layout_weight="2"
         android:divider="#fff"
         android:layout_height="0dp"
-        />
 
+        />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/lightBackground"
         android:orientation="horizontal"
         android:layout_margin="8dp"
+
         >
 
         <EditText
@@ -48,4 +70,5 @@
             android:background="@drawable/ic_send"
             android:contentDescription="@string/send" />
     </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

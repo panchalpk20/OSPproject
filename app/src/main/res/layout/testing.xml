@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Select_language">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_app_language"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:fontFamily="sans-serif-smallcaps"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp">
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/english"
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="20dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardBackgroundColor="#20DA2828"
+                    >
+                    <TextView
+                        android:id="@+id/eng"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="English"
+                        android:layout_gravity="center"
+                        android:gravity="center_horizontal"
+                        android:textSize="25dp"
+                        android:textColor="#EA1717"
+                        android:textStyle="bold"
+                        android:fontFamily="sans-serif-smallcaps"
+
+                        />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/hindi"
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    android:layout_margin="20dp"
+                    app:cardCornerRadius="15dp"
+                    app:cardBackgroundColor="#283EDA45"
+
+                    >
+                    <Button
+                        android:id="@+id/hi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="हिन्दी"
+                        android:layout_gravity="center"
+                        android:gravity="center_horizontal"
+                        android:textSize="25dp"
+                        android:textColor="#DD20A125"
+                        android:background="@color/transparent"
+                        android:textStyle="bold"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                >
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/marathi"
+                    android:layout_width="140dp"
+                    android:layout_height="80dp"
+                    app:cardCornerRadius="15dp"
+                    android:layout_gravity="center"
+                    app:cardBackgroundColor="#28CB53DF"
+
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="मराठी"
+                        android:layout_gravity="center"
+                        android:gravity="center_horizontal"
+                        android:textSize="25dp"
+                        android:textColor="#9864A1"
+                        android:textStyle="bold"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

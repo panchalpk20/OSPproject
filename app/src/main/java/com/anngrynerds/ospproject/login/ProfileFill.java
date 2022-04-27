@@ -1,46 +1,82 @@
 package com.anngrynerds.ospproject.login;
 
+import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
+
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.anngrynerds.ospproject.R;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.home.HomeActivity;
 import com.anngrynerds.ospproject.pojo.User;
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class ProfileFill extends AppCompatActivity {
 
     private static final String TAG = "PROFILE_FRAG";
     TextView temp;
-    String lat, longitude;
     EditText et_phno;
     EditText et_name;
     EditText et_address;
+    Uri uri = null;
+    ActivityResultLauncher<Intent> imageCaptureActivityLaunch;
+    StorageReference storageReference;
+
+
+
+
 
     TextInputLayout ipl_name;
     TextInputLayout ipl_number;
@@ -67,16 +103,21 @@ public class ProfileFill extends AppCompatActivity {
     String[] cities;
 
     String str_lat, str_long;
+    LinearLayout l1,l2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_fill);
-
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         temp = findViewById(R.id.temp);
 
         // getCurrentAddress();
-
+        storageReference = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         SharedPreferences prefs = this.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
@@ -98,8 +139,16 @@ public class ProfileFill extends AppCompatActivity {
         et_address = findViewById(R.id.profile_address);
         et_name = findViewById(R.id.profile_name);
         btn_continue = findViewById(R.id.profile_btn_continue);
+        //l1=findViewById(R.id.r1);
+        //l2=findViewById(R.id.r2);
 
         et_phno.setText(str_phno);
+
+
+
+
+        
+
 
         if(fromProfile){
 
@@ -143,6 +192,7 @@ public class ProfileFill extends AppCompatActivity {
 
         rg_role.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.profile_rb_role_farmer) str_role = "farmer";
+
             if (checkedId == R.id.profile_rb_role_customer) str_role = "customer";
         });
 
@@ -168,37 +218,40 @@ public class ProfileFill extends AppCompatActivity {
 
         btn_continue.setOnClickListener(v -> {
 
-            showpg("Updating data, please wait");
+            showpg(getString(R.string.updatingdata));
 
             str_phno = et_phno.getText().toString();
             str_name = et_name.getText().toString();
             str_address = et_address.getText().toString();
 
             if (str_name.isEmpty()) {
-                ipl_name.setError("Enter Name");
+                ipl_name.setError(getString(R.string.entername));
                 et_name.requestFocus();
                 closepg();
             } else if (str_name.length() < 4) {
-                ipl_name.setError("Name should contain at least 4 characters");
+                ipl_name.setError(getString(R.string.nameshould));
                 et_name.requestFocus();
                 closepg();
             } else if (str_address.isEmpty()) {
-                ipl_address.setError("Enter Address");
+                ipl_address.setError(getString(R.string.enteraddress));
                 et_address.requestFocus();
                 closepg();
             } else if (str_address.length() < 10) {
-                ipl_address.setError("Address should be minimum of 10 characters");
+                ipl_address.setError(getString(R.string.addressshould));
                 et_address.requestFocus();
                 closepg();
             } else if (str_city.isEmpty()) {
-                Snackbar.make(v, "Please Select City", BaseTransientBottomBar.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.selectcity, BaseTransientBottomBar.LENGTH_LONG).show();
                 closepg();
 
             } else if (str_role.isEmpty()) {
-                Snackbar.make(v, "Please Select Role", BaseTransientBottomBar.LENGTH_LONG).show();
+                Snackbar.make(v, R.string.selectrole, BaseTransientBottomBar.LENGTH_LONG).show();
                 closepg();
 
             } else {
+                //String uid = FirebaseAuth.getInstance().getCurrentUser().getUid()+"jpeg";
+                String pune=Constantss.citypune;
+                String mumabi=Constantss.citymumbai;
 
                 Map<String, Object> u = new HashMap<>();
                 u.put("mobNo", str_phno);
@@ -207,7 +260,15 @@ public class ProfileFill extends AppCompatActivity {
                 u.put("role", str_role);
                 u.put("lat", str_lat);
                 u.put("lang", str_long);
-                u.put("city", str_city);
+                if(str_city.equalsIgnoreCase("Pune") || str_city.equals("पुणे")){
+                    str_city=pune;
+                    u.put("city", str_city);
+                }
+                else {
+                    str_city=mumabi;
+                    u.put("city",str_city);
+                }
+                u.put("imgProfile",uri);
 
                 myRef.child(str_city).child(str_role).child(str_phno).updateChildren(u).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -231,7 +292,7 @@ public class ProfileFill extends AppCompatActivity {
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
                     } else {
-                        Snackbar.make(v, "Error Occurred while saving information: " + task.getException().getMessage(),
+                        Snackbar.make(v, getString(R.string.errorsnak) + task.getException().getMessage(),
                                 BaseTransientBottomBar.LENGTH_INDEFINITE).show();
 
                         Log.e(TAG, "onCreate: " + task.getException().getMessage());
@@ -243,6 +304,60 @@ public class ProfileFill extends AppCompatActivity {
 
     }
 
+
+    /*private void handleUpload(Uri uri) {
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid()+"jpg";
+        StorageReference fileref=storageReference.child("profileImages/"+uid);
+        fileref.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                fileref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Glide.with(ProfileFill.this).load(uri).into(profileImg);
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }*/
+
+    private void getDownloadUrl(StorageReference reference) {
+        reference.getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d(TAG, "onSuccess: " + uri);
+                        setUserProfileUrl(uri);
+                    }
+                });
+    }
+
+    private void setUserProfileUrl(Uri uri) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build();
+
+        user.updateProfile(request)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ProfileFill.this, "Updated succesfully", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(ProfileFill.this, "Profile image failed...", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
     private void closepg() {
         dialog.dismiss();

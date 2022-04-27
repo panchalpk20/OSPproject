@@ -4,16 +4,21 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -55,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     Dialog dialog;
     private FirebaseAuth mAuth;
     TextInputLayout ipl_otp;
+    ImageView verify;
 
     CardView login1; //mobile number card
     CardView login2; //enter otp card
@@ -63,7 +69,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         context = LoginActivity.this;
@@ -82,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         ETmobileNo = findViewById(R.id.login_et_mobile_number);
         sendOtp = findViewById(R.id.login_btn_sent_otp);
         ipl_mobilenumber = findViewById(R.id.login_ipl_mobno);
+        verify=findViewById(R.id.verifcationdone);
 
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_transparent_loading);
@@ -230,7 +241,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
 //                            Log.e("signCredential:success", "");
                             user = Objects.requireNonNull(task.getResult()).getUser();
-
+                            verify.setVisibility(View.VISIBLE);
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString("id", user.getPhoneNumber());
                             editor.apply();
@@ -262,7 +273,7 @@ public class LoginActivity extends AppCompatActivity {
         dialog.dismiss();
     }
     private void showpg(){
-        pgMsg.setText("Sending OTP");
+        pgMsg.setText(R.string.sendotp);
         dialog.show();
     }
 

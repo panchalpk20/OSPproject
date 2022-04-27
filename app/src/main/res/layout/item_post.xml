@@ -4,8 +4,10 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="12dp"
+    app:cardCornerRadius="6dp"
     app:contentPadding="5dp"
-
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/alluse"
     >
 <TextView
     android:layout_width="wrap_content"
@@ -13,6 +15,7 @@
     android:id="@+id/userName"
     android:textColor="@color/black"
     android:textStyle="bold"
+    android:textSize="18dp"
     android:text="User Name"
 
     />
@@ -37,14 +40,20 @@
 
         <TextView
             android:id="@+id/post_distance"
-            android:layout_width="0dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
-            android:text="xxx meter from you"
+            android:text=" "
             android:gravity="start"
             android:lines="2"
-            android:layout_weight="1"
-            />
 
+            />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/meter_from_you"
+                android:gravity="start"
+                android:lines="2"
+                />
         <TextView
             android:id="@+id/post_date"
             android:layout_width="0dp"
@@ -65,19 +74,28 @@
             android:indeterminate="true"
             android:indeterminateTint="#E64A19"
             />
-
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="5dp"
+            android:background="@drawable/cardviewround"
+            android:foreground="?android:attr/selectableItemBackground"
+            >
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/post_image_container"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
                 />
 
         </HorizontalScrollView>
+        </androidx.cardview.widget.CardView>
+
 
 
         <TextView
@@ -86,7 +104,7 @@
             android:layout_height="45dp"
             android:text="Name"
             android:background="@drawable/text_view_style"
-            android:textSize="@dimen/normalText"
+            android:textSize="16dp"
             android:gravity="center|start"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
@@ -109,7 +127,7 @@
                 android:layout_height="45dp"
                 android:text="Qty"
                 android:background="@drawable/text_view_style"
-                android:textSize="@dimen/normalText"
+                android:textSize="16dp"
                 android:gravity="center|start"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp"
@@ -126,7 +144,7 @@
                 android:layout_height="45dp"
                 android:text="Cost"
                 android:background="@drawable/text_view_style"
-                android:textSize="@dimen/normalText"
+                android:textSize="16dp"
                 android:gravity="center|start"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp"
@@ -138,16 +156,66 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/post_btn_buy"
+
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginTop="6dp"
-            android:text="Buy"
-            style="?android:attr/borderlessButtonStyle"
-            android:background="@color/buttonBackground"
-            />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            >
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    >
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/call"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/radio_loc_regular"
+        android:drawableTop="@drawable/callme"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="@string/call_me" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/post_btn_buy"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/radio_loc_regular"
+        android:drawableTop="@drawable/ic_baseline_shopping_basket_24"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="@string/buyy" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/whatsapp"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="100dp"
+        android:layout_height="45dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/radio_loc_regular"
+        android:drawableTop="@drawable/messageme"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:text="@string/whatsapp_me"
+        android:textSize="12dp" />
+</RelativeLayout>
+
+
+        </LinearLayout>
+
     </LinearLayout>
+
+
+
 
 
 </androidx.cardview.widget.CardView>

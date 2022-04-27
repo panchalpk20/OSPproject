@@ -4,8 +4,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,9 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anngrynerds.ospproject.R;
@@ -35,6 +42,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 
@@ -45,6 +57,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
     ArrayList<Order> list;
     User user;
     PostObject p;
+
 
 
     public CustomerOrderAdapter(Context context, ArrayList<Order> list) {
@@ -76,21 +89,57 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         totalCost = Integer.parseInt(order.getCost())*Integer.parseInt(order.getQty());
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_CANCELLED)) {
+            holder.cardView.getBackground().setAlpha(128);  // 25% transparent
+            holder.btn_completed.getBackground().setAlpha(128);
+            holder.btn_completed.setEnabled(false);
+            holder.btn_cancel.getBackground().setAlpha(128);
+            holder.btn_cancel.setEnabled(false);
+            holder.itemView.setEnabled(false);
+            holder.cancelimg.setVisibility(View.VISIBLE);
+            holder.cancelimg.setOnClickListener(v->{
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            ref.child(user.getCity()).child(Constantss.orderNode).child(order.getOrderId()).removeValue();
+                            int newPosition = holder.getAdapterPosition();
+                            list.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(newPosition, list.size());
+                            break;
 
-        holder.tv_orderStatus.setText(order.getOrderStatus());
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.deleit);
+                builder.setMessage(R.string.cnfdel).setPositiveButton(R.string.yes, dialogClickListener)
+                        .setNegativeButton(R.string.no, dialogClickListener).show();
+            });
+        }
+
+
+
 
         if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_CANCELLED)){
+            holder.tv_orderStatus.setText(R.string.cancelled);
             holder.tv_orderStatus.setTextColor(Color.RED);
         }else if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_COMPLETED_CUSTOMER)){
             //green
+            holder.tv_orderStatus.setText(R.string.complete);
             holder.tv_orderStatus.setTextColor(Color.GREEN);
 
         }if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_COMPLETED_FARMER)){
             //blue
+            holder.tv_orderStatus.setText(R.string.shiped);
             holder.tv_orderStatus.setTextColor(Color.BLUE);
 
         }if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_PROCESSING)){
             //orange
+            holder.tv_orderStatus.setText(R.string.procesing);
             holder.tv_orderStatus.setTextColor(Color.parseColor("#FFAB00"));
 
         }
@@ -102,7 +151,7 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                 Log.e("TAG", "onDataChange: "+snapshot.getChildrenCount() );
                 seller = snapshot.getValue(User.class);
                 if (seller != null) {
-                    holder.tv_soldby.setText(MessageFormat.format("Sold by {0}", seller.getName()));
+                    holder.tv_soldby.setText(MessageFormat.format("{0}", seller.getName()));
                 }
 
             }
@@ -119,9 +168,33 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                Log.e("TAG", "onDataChange: "+snapshot.getKey());
                 p = snapshot.getValue(PostObject.class);
-                if (p != null) {
+               if (p != null) {
                     Glide.with(context).load(p.getFilePathList().get(0)).into(holder.img);
+                   //inputStream =new BufferedInputStream(inputStream);
+                   //Uri uri=Uri.parse(p.getFilePathList().get(0));
+                  // Toast.makeText(context, uri.toString(), Toast.LENGTH_SHORT).show();
+                  /* ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+                   BitmapDrawable bitmapDrawable=(BitmapDrawable)holder.img.getDrawable();
+                   Bitmap bitmap=bitmapDrawable.getBitmap();
+                   bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+                   byte[]imagebyte=byteArrayOutputStream.toByteArray();
+                   String img=Base64.encodeToString(imagebyte,Base64.DEFAULT);
+                   SharedPreferences shre = PreferenceManager.getDefaultSharedPreferences(context);
+                   SharedPreferences.Editor edit=shre.edit();
+                   edit.putString("image_data",img);
+                   edit.commit();
+               }
+                SharedPreferences shre = PreferenceManager.getDefaultSharedPreferences(context);
+                String imgstring = shre.getString("image_data", "");
+                try{
+                    byte[] imgbyte=Base64.decode(imgstring,Base64.DEFAULT);
+                    Bitmap bitmap=BitmapFactory.decodeByteArray(imgbyte,0,imgbyte.length);
+                    holder.img.setImageBitmap(bitmap);
+                }catch (IllegalArgumentException e)
+                {
+                    */
                 }
+
             }
 
             @Override
@@ -186,12 +259,13 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
 
             bottomSheetDialog.show();
 
+
         });
         holder.tv_name.setText(order.getName());
         holder.tv_price.setText(order.getCost());
         holder.tv_qty.setText(order.getQty());
 
-        holder.tv_totalCost.setText(MessageFormat.format("Total Cost Rs {0}", totalCost));
+        holder.tv_totalCost.setText(MessageFormat.format(" {0}", totalCost));
 
         holder.btn_completed.setOnClickListener(v->{
             //todo implement
@@ -214,9 +288,9 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Confirm Order delivered");
-            builder.setMessage("is Order successfully delivered to you?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            builder.setTitle(R.string.cnfdelivery);
+            builder.setMessage(R.string.isdelivered).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener).show();
 
         });
 
@@ -229,7 +303,6 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
                                 .child(Constantss.orderNode)
                                 .child(order.getOrderId()).child("orderStatus").setValue(Constantss.ORDER_STATUS_CANCELLED);
 
-
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -239,9 +312,10 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Confirm Order Cancel");
-            builder.setMessage("Are you sure you want to cancel order").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            builder.setTitle(R.string.cancelorder);
+            builder.setMessage(R.string.surecancelorder).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener).show();
+
         });
 
 
@@ -258,11 +332,12 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
         TextView tv_totalCost;
         Button btn_completed;
         Button btn_cancel;
-        ImageView img;
+        ImageView img,cancelimg;
         TextView tv_name;
         TextView tv_qty;
         TextView tv_price;
         TextView tv_orderStatus;
+        CardView cardView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -275,6 +350,8 @@ public class CustomerOrderAdapter extends RecyclerView.Adapter<CustomerOrderAdap
             tv_qty = itemView.findViewById(R.id.item_cust_order_qty);
             tv_price = itemView.findViewById(R.id.item_cust_order_price);
             tv_orderStatus = itemView.findViewById(R.id.item_cust_order_status);
+            cardView=itemView.findViewById(R.id.cardview3);
+            cancelimg=itemView.findViewById(R.id.imgcancel);
 
         }
     }

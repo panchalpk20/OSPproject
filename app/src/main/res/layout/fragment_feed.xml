@@ -1,57 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".home.FeedFragment">
+   <androidx.cardview.widget.CardView
+       android:layout_width="match_parent"
+       android:layout_height="60dp"
+       app:cardBackgroundColor="#FFA6EF50">
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:orientation="horizontal">
+
+
+           <EditText
+               android:id="@+id/feed_et_searchqry"
+               android:layout_width="0dp"
+               android:layout_height="38dp"
+               android:hint="@string/type_here_to_search"
+               app:drawableLeftCompat="@drawable/searchicon"
+               android:autofillHints="none"
+               android:inputType="text"
+               android:textSize="16sp"
+               android:layout_gravity="center_vertical"
+               android:layout_marginLeft="10dp"
+               android:paddingHorizontal="8dp"
+               android:paddingVertical="4dp"
+               android:layout_weight="10"
+               android:background="@drawable/roundbox"
+               />
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_gravity="center_vertical"
+               android:gravity="right"
+               android:text="@string/filter"
+               android:textSize="16dp"
+               android:layout_marginLeft="4dp"
+               android:textColor="@color/black"/>
+          <ImageView
+              android:id="@+id/spinnerImg"
+              android:layout_alignParentRight="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:background="@drawable/dropdown_arrow"/>
+
+
+       </LinearLayout>
+   </androidx.cardview.widget.CardView>
 
     <LinearLayout
+
+        android:layout_marginTop="60dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         >
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:orientation="horizontal"
-            android:weightSum="10"
-            android:padding="4dp"
-            >
-
-            <EditText
-                android:id="@+id/feed_et_searchqry"
-                android:layout_width="0dp"
-                android:layout_height="38dp"
-                android:hint="@string/type_here_to_search"
-                android:autofillHints="none"
-                android:inputType="text"
-                android:textSize="18sp"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:layout_weight="10"
-                android:background="@drawable/style_tv"
-                />
-
-        </LinearLayout>
-
-
-
-        <CheckBox
-            android:id="@+id/feed_checkbox_sort"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sort_by_distance"
-            />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_feed_rc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            />
+            android:layout_marginTop="5dp" />
 
 
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

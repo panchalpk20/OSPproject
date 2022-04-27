@@ -5,12 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:contentPadding="5dp">
-
+    app:contentPadding="5dp"
+    android:id="@+id/cardview2">
+    <ImageView
+        android:id="@+id/imgcancel"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/cancel"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,11 +28,16 @@
             android:weightSum="5">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/soldto"
+                android:textSize="15sp"
+                tools:ignore="HardcodedText" />
+            <TextView
                 android:id="@+id/item_farmer_order_soldby"
                 android:layout_width="0dp"
-                android:layout_weight="3"
                 android:layout_height="wrap_content"
-                android:text="sold To"
+                android:layout_weight="3"
                 android:textSize="15sp"
                 tools:ignore="HardcodedText" />
 
@@ -35,6 +49,7 @@
                 android:text="ORDER STATUS"
                 android:gravity="end"
                 tools:ignore="HardcodedText"
+                android:layout_marginRight="5dp"
                 android:textSize="@dimen/normalText"
                 />
 
@@ -51,7 +66,7 @@
                 <TextView
                     android:layout_width="70dp"
                     android:gravity="start"
-                    android:text="Image"
+                    android:text="@string/image"
                     android:textSize="@dimen/normalText"
                     android:textStyle="bold"
                     tools:ignore="HardcodedText" />
@@ -113,17 +128,27 @@
             </TableRow>
 
         </TableLayout>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/totalcost"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/black"
+        android:textSize="@dimen/normalText"
+        tools:ignore="HardcodedText" />
         <TextView
             android:id="@+id/totalCost"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TotalCost of order"
             android:textColor="@color/black"
             android:textSize="@dimen/normalText"
             tools:ignore="HardcodedText" />
-
+</LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -131,25 +156,25 @@
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/item_farmer_order_btn_completed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="2dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/buttonBackground"
-                android:text="Order Sent/Shipped"
+                android:background="@drawable/radio_loc_selected"
+                android:text="@string/order_sent"
                 android:textSize="12sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/item_farmer_order_btn_cancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="2dp"
                 android:layout_weight="1"
-                android:backgroundTint="@color/error"
+                android:background="@drawable/cancelbutton"
                 android:text="@string/Cancel"
                 android:textSize="12sp" />
 

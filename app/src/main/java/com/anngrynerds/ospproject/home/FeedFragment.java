@@ -1,5 +1,7 @@
 package com.anngrynerds.ospproject.home;
 
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
@@ -14,6 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +50,7 @@ FeedFragment extends Fragment {
     Context context;
     DatabaseReference databaseReference;
     User user;
-    RecyclerView rc;
+    RecyclerView rc,rc1;
     FeedAdapter adapter;
     EditText et_searchQry;
     DatabaseReference ref;
@@ -55,6 +60,12 @@ FeedFragment extends Fragment {
     SharedPreferences mPrefs;
     TextView pgMsg;
     Dialog dialog;
+    Spinner spinner;
+    ImageView spinnerimg;
+    int chk=1;
+    boolean flag=true;
+
+
 
     public FeedFragment() {
         // Required empty public constructor
@@ -91,24 +102,44 @@ FeedFragment extends Fragment {
         dialog.setCancelable(false);
         pgMsg = dialog.findViewById(R.id.dialog_pgmsg);
 
-
+        //spinner=view.findViewById(R.id.spinner);
         checkBox_sort = view.findViewById(R.id.feed_checkbox_sort);
 
         et_searchQry = view.findViewById(R.id.feed_et_searchqry);
+        spinnerimg=view.findViewById(R.id.spinnerImg);
+
+        LayoutInflater layoutInflater= (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.filtterdropdown, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView,250, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        checkBox_sort=popupView.findViewById(R.id.feed_checkbox_sort);
+        spinnerimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(popupWindow.isShowing()) {
+                    popupWindow.dismiss();
+                }
+                else {
+                    popupWindow.showAsDropDown(spinnerimg, 50, 0);
+                }
+            }
+        });
 
 //        searchDesc = view.findViewById(R.id.feed_t_searchdesc);
 //        searchDesc.setVisibility(View.GONE);
-
 
         checkBox_sort.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
             if(isChecked){
                 sortByDistance();
+                popupWindow.dismiss();
             }else{
                 dontSort();
+                popupWindow.dismiss();
             }
 
         });
+
+
 
         et_searchQry.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,6 +166,7 @@ FeedFragment extends Fragment {
         rc = view.findViewById(R.id.fragment_feed_rc);
         rc.setLayoutManager(
                 new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+
 
         ref = FirebaseDatabase.getInstance()
                 .getReference();
@@ -212,11 +244,14 @@ FeedFragment extends Fragment {
     }
 
     private void sortByDistance() {
+try {
+    list.sort((o1, o2) -> Float.compare(Float.parseFloat(o1.getDistance()),
+            Float.parseFloat(o2.getDistance())));
 
-        list.sort((o1, o2) -> Float.compare(Float.parseFloat(o1.getDistance()),
-                Float.parseFloat(o2.getDistance())));
+    adapter.notifyDataSetChanged();
+}catch (Exception e){
 
-        adapter.notifyDataSetChanged();
+}
 
     }
 
@@ -262,7 +297,7 @@ FeedFragment extends Fragment {
         dialog.dismiss();
     }
     private void showpg(){
-        pgMsg.setText("Loading...!");
+        pgMsg.setText(R.string.loading);
         dialog.show();
     }
 

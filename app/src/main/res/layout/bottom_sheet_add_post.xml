@@ -36,14 +36,25 @@
                 />
 
         </HorizontalScrollView>
-
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_photos"
+            android:id="@+id/delete_photo_from_img_view"
+            android:layout_marginTop="10dp"
+            android:background="@color/actionbar"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            />
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/upload_image"
+            android:textSize="18dp"
             android:id="@+id/bs_post_btn_uploadImage"
             android:layout_marginTop="10dp"
-            android:background="@color/buttonBackground2"
+            android:background="@color/actionbar"
             android:textColor="@color/white"
             android:textAllCaps="false"
             />
@@ -119,7 +130,13 @@
                 android:layout_weight="1"
                 android:layout_marginStart="5dp"
                 >
-
+                <TextView
+                    android:id="@+id/suggestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:textSize="10dp"
+                    android:visibility="gone"
+                    android:textColor="@color/black"/>
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/bs_post_et_item_price"
                     android:layout_width="match_parent"
@@ -131,6 +148,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:textSize="12dp"
+            android:textColor="@color/error"
+            android:text="@string/product_price_greater_than_suggested_price_may_product_get_unsold"
+            android:lines="2"
+            />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bs_post_btn_submit"
@@ -138,7 +163,7 @@
             android:layout_height="wrap_content"
             android:text="@string/post"
             android:layout_marginTop="10dp"
-            android:background="@color/buttonBackground"
+            android:background="@drawable/radio_loc_selected"
             android:textColor="@color/white"
             android:textAllCaps="false"
             android:textSize="@dimen/normalText"

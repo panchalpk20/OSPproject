@@ -19,13 +19,14 @@
         android:padding="4dp"
         android:textColor="@color/black"
         android:textStyle="bold"
+        android:fontFamily="sans-serif-smallcaps"
         />
 
     <TextView
         android:id="@+id/bs_cust_order_soldby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sold by ..."
+        android:text="@string/sold_by"
         android:textSize="@dimen/normalText"
         android:textColor="@color/textColor"
 
@@ -94,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:padding="4dp"
                 android:autofillHints="name"
-                android:text="stock"
+                android:text="Stock"
                 android:textSize="@dimen/normalText"
                 android:textColor="@color/textColor"
                 app:drawableEndCompat="@drawable/ic_kg" />
@@ -123,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="name"
                 android:padding="4dp"
-                android:text="price/kg"
+                android:text="Price/kg"
                 android:textSize="@dimen/normalText"
                 android:textColor="@color/textColor"
                 app:drawableEndCompat="@drawable/ic_rskg" />
@@ -196,13 +197,15 @@
         android:id="@+id/bs_cust_order_btn_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/style_btn_placeorder"
+        android:background="@drawable/radio_loc_selected"
         android:text="@string/call_seller"
         android:textAllCaps="false"
+        android:drawableTop="@drawable/callme"
         android:textColor="@color/white"
         android:layout_marginTop="6dp"
         android:textSize="18sp"
         android:layout_marginBottom="8dp"
+
         />
 
 </LinearLayout>

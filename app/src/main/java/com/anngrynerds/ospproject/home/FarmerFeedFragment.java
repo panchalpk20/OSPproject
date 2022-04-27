@@ -16,12 +16,16 @@ import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -30,9 +34,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -43,9 +49,12 @@ import com.anngrynerds.ospproject.WeatherClasses.SupportClass;
 import com.anngrynerds.ospproject.WeatherClasses.Sys;
 import com.anngrynerds.ospproject.WeatherClasses.Wind;
 import com.anngrynerds.ospproject.WeatherClasses.weatherAPI;
+import com.anngrynerds.ospproject.adapters.FeedAdapter;
 import com.anngrynerds.ospproject.constants.Constantss;
 import com.anngrynerds.ospproject.ml.ModelUnquant;
+import com.anngrynerds.ospproject.pojo.Order;
 import com.anngrynerds.ospproject.pojo.PostObject;
+import com.anngrynerds.ospproject.pojo.QuantityDetails;
 import com.anngrynerds.ospproject.pojo.User;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -59,21 +68,29 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -93,6 +110,32 @@ public class FarmerFeedFragment extends Fragment {
     ActivityResultLauncher<Intent> cropImageActivityResult;
     ArrayList<String> filePathList = new ArrayList<>();
     ArrayList<String> downloadUrl = new ArrayList<>();
+    ArrayList<String> compareImage=new ArrayList<>();
+    ArrayList<String> resultString=new ArrayList<>();
+    ArrayList<String> nameAndQuantity=new ArrayList<>();
+    ArrayList<String> suggestionList=new ArrayList<>();
+
+
+
+
+    ArrayList<Integer> valSetForTomato = new ArrayList<>();
+    ArrayList<String> valSetForTomatoResult = new ArrayList<String>();
+    ArrayList<Integer> valSetForOnion = new ArrayList<Integer>();
+    ArrayList<String> valSetForOnionResult = new ArrayList<String>();
+    ArrayList<Integer> valSetForBrinjal = new ArrayList<Integer>();
+    List<String> valSetForBrinjalResult = new ArrayList<String>();
+    ArrayList<Integer> valSetForLadyfinger = new ArrayList<Integer>();
+    List<String> valSetForLadyfingerResult = new ArrayList<String>();
+    ArrayList<Integer> valSetForCarrot = new ArrayList<Integer>();
+    List<String> valSetForCarrotResult = new ArrayList<String>();
+
+
+    SimpleDateFormat sdf;
+    Date date1;
+    SharedPreferences prefs;
+    Gson gson;
+    Type type;
+    String json;
     Context context;
     BottomSheetDialog bottomSheetDialog;
     LinearLayout bs_imageContainer;
@@ -103,8 +146,8 @@ public class FarmerFeedFragment extends Fragment {
     ProgressBar bs_progressBar;
     User user;
     DatabaseReference databaseReference;
-    TextView tvCity;
-    TextView tvTemp;
+    TextView tvCity,tvCityy;
+    TextView tvTemp,tvTempp;
     TextView tvFeelslike;
     TextView tvMin;
     TextView tvMax;
@@ -114,9 +157,10 @@ public class FarmerFeedFragment extends Fragment {
     TextView tvSunrise;
     TextView tvSunset;
     TextView tvClouds;
-    ImageView img_cover;
+    ImageView img_cover,img_coverr;
     ImageView img_cloudIcon;
-    TextView time;
+    TextView time,timee;
+    TextView notifyy;
     LinearLayout layout;
     String api_key = "d3ba099653be9ae93894fd0c30529ed3";
     //  String city="sangli";
@@ -124,14 +168,29 @@ public class FarmerFeedFragment extends Fragment {
     Dialog dialog;
     int imageSize = 224;
     String[] names;
-    EditText post_item_name;
+    EditText post_item_name,post_item_price;
+    TextInputLayout inputLayout_item_price;
+    TextView suggestion;
     String list;
     FrameLayout notificationIcon;
     TextView notificationBadge;
     Uri intermediateProvider;
     Uri resultProvider;
     ArrayList<String> notificationList = new ArrayList<>();
-
+    Button post,delete;
+    TextView tomatoavg,tomatsgs;
+    TextView onionavg,onionsgs;
+    TextView brinjalavg,brinjalsgs;
+    TextView ladyfingeravg,ladyfingersgs;
+    TextView carrotavg,carrotsgs;
+    int timeOfDay;
+    String time12="19:30 PM",itemname,quty;
+    CardView cardView;
+    Dialog dialog1;
+    private String Pune="Pune";
+    String tomato="tomato",onion="onion",brinjal="brinjal",ladyfinger="ladyfinger",carrot="carrot";
+    ImageView imageView;
+    List<String> uniqueDataList;
 
     public FarmerFeedFragment() {
         // Required empty public constructor
@@ -158,13 +217,27 @@ public class FarmerFeedFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        OnBackPressedCallback callback=new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                //bottomSheetDialog.dismiss();
+
+
+            }
+        };
+
+
+
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(callback);
         View view = inflater.inflate(R.layout.fragment_farmer_feed, container, false);
         context = view.getContext();
 
@@ -174,36 +247,91 @@ public class FarmerFeedFragment extends Fragment {
         String json = mPrefs.getString(Constantss.sharedPrefUserKey, "");
         user = gson.fromJson(json, User.class);
         fab_addPost = view.findViewById(R.id.fragment_farmerfeed_fb_add_post);
+        cardView=view.findViewById(R.id.cardview);
+        tvCityy = view.findViewById(R.id.tv_City);
+        tvTempp = view.findViewById(R.id.tv_Temp);
+        timee= view.findViewById(R.id.tv_Time);
+        img_coverr = view.findViewById(R.id.weather_iv_coverr);
+        tomatoavg=view.findViewById(R.id.tv_tomato_avgprice);
+        tomatsgs=view.findViewById(R.id.tv_tomato_todayprice);
+        onionavg=view.findViewById(R.id.tv_onion_avgprice);
+        onionsgs=view.findViewById(R.id.tv_onion_todayprice);
+        brinjalavg=view.findViewById(R.id.tv_brinjal_avgprice);
+        brinjalsgs=view.findViewById(R.id.tv_brinjal_todayprice);
+        ladyfingeravg=view.findViewById(R.id.tv_ladyfinger_avgprice);
+        ladyfingersgs=view.findViewById(R.id.tv_ladyfinger_todayprice);
+        carrotavg=view.findViewById(R.id.tv_carrot_avgprice);
+        carrotsgs=view.findViewById(R.id.tv_carrot_todayprice);
 
 
-        tvCity = view.findViewById(R.id.tv_city);
-        tvTemp = view.findViewById(R.id.tv_temp);
-        tvFeelslike = view.findViewById(R.id.tv_feelslike);
-        tvMin = view.findViewById(R.id.tv_mintemp);
-        tvMax = view.findViewById(R.id.tv_maxtemp);
-        tvWind = view.findViewById(R.id.tv_wind);
-        tvHumidity = view.findViewById(R.id.tv_humidity);
-        tvPressure = view.findViewById(R.id.tv_pressure);
-        tvSunrise = view.findViewById(R.id.tv_sunrise);
-        tvSunset = view.findViewById(R.id.tv_sunset);
-        layout = view.findViewById(R.id.linear);
-        tvClouds = view.findViewById(R.id.tv_clouds);
-        img_cloudIcon = view.findViewById(R.id.iv_cloudIcon);
-        img_cover = view.findViewById(R.id.weather_iv_cover);
-        time = view.findViewById(R.id.tv_time);
+
+        dialog1=new Dialog(context,android.R.style.Theme_NoTitleBar_Fullscreen);
+        dialog1.setContentView(R.layout.weatheralldetails);
+        tvCity = dialog1.findViewById(R.id.tv_city);
+        tvTemp = dialog1.findViewById(R.id.tv_temp);
+        tvFeelslike = dialog1.findViewById(R.id.tv_feelslike);
+        tvMin = dialog1.findViewById(R.id.tv_mintemp);
+        tvMax = dialog1.findViewById(R.id.tv_maxtemp);
+        tvWind = dialog1.findViewById(R.id.tv_wind);
+        tvHumidity = dialog1.findViewById(R.id.tv_humidity);
+        tvPressure = dialog1.findViewById(R.id.tv_pressure);
+        tvSunrise = dialog1.findViewById(R.id.tv_sunrise);
+        tvSunset = dialog1.findViewById(R.id.tv_sunset);
+        // layout = view1.findViewById(R.id.linear);
+        tvClouds = dialog1.findViewById(R.id.tv_clouds);
+        img_cloudIcon = dialog1.findViewById(R.id.iv_cloudIcon);
+        img_cover = dialog1.findViewById(R.id.weather_iv_cover);
+        time = dialog1.findViewById(R.id.tv_time);
+
+
+        //ArrayAdapter<String> adapter =  new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, suggestionList);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setImageCoverAccToTime();
+                weatherProcessing();
+                dialog1.show();
+
+
+            }
+        });
+
+        Collections.addAll(valSetForTomato,30, 100, 20, 120, 19, 130, 21, 90, 24, 110,22,1000);
+       // valSetForTomato= (ArrayList<Integer>) Arrays.asList(20, 100, 20, 120, 19, 130, 21, 90, 20, 110);
+        Collections.addAll(valSetForOnion,15, 1000, 16, 900, 15, 1050, 14, 1200, 15, 900,16,1400);
+        Collections.addAll(valSetForBrinjal,17, 100, 18, 90, 16, 130, 17, 110, 18, 80);
+        Collections.addAll(valSetForLadyfinger,30, 100, 29, 120, 30, 105, 28, 150, 31, 110);
+        Collections.addAll(valSetForCarrot,35, 100, 36, 90, 35, 110, 34, 120, 35, 100);
+
+
+
+
 
         notificationIcon = view.findViewById(R.id.farmer_feed_notification);
         notificationBadge = view.findViewById(R.id.farmer_feed_notificationBadge);
 
-
         setUpNotifications();
-
+      //  productPriceRate();
+        //Product();
         setImageCoverAccToTime();
+        //productPriceRateForTomato();
+       // productPriceRateForOnion();
+        //productPriceRateForBrinjal();
+        //productPriceRateForLadyfinger();
+        //productPriceRateForCarrot();
+
+
+
+
+
+
 
         dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_transparent_loading);
         dialog.setCancelable(false);
         pgMsg = dialog.findViewById(R.id.dialog_pgmsg);
+
 
 
         notificationIcon.setOnClickListener(v->{
@@ -284,7 +412,7 @@ public class FarmerFeedFragment extends Fragment {
                         Bitmap cropImage = loadFromUri(resultProvider);
                         filePathList.add(resultProvider.toString());
 
-                        ImageView imageView = new ImageView(context);
+                         imageView = new ImageView(context);
                         imageView.setImageBitmap(cropImage);
                         ViewGroup.LayoutParams params = bs_imageContainer.getLayoutParams();
                         params.height = (int) TypedValue.applyDimension(
@@ -352,7 +480,7 @@ public class FarmerFeedFragment extends Fragment {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                ImageView imageView = new ImageView(context);
+                                 imageView= new ImageView(context);
                                 imageView.setImageBitmap(bitmap);
                                 ViewGroup.LayoutParams params = bs_imageContainer.getLayoutParams();
                                 params.height = (int) TypedValue.applyDimension(
@@ -393,7 +521,7 @@ public class FarmerFeedFragment extends Fragment {
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                ImageView imageView = new ImageView(context);
+                                imageView = new ImageView(context);
                                 imageView.setImageBitmap(bitmap);
                                 ViewGroup.LayoutParams params = bs_imageContainer.getLayoutParams();
                                 params.height = (int) TypedValue.applyDimension(
@@ -424,7 +552,8 @@ public class FarmerFeedFragment extends Fragment {
         return view;
     }
 
-    private void setUpNotifications() {
+    private void setUpNotifications()
+    {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
         ref.child(user.getCity())
@@ -437,6 +566,12 @@ public class FarmerFeedFragment extends Fragment {
                         for (DataSnapshot s : snapshot.getChildren()) {
                             //       Log.e(TAG, "Feed" + s.toString());
                             PostObject p = s.getValue(PostObject.class);
+
+                            if (p.getItem_name().contains("totomoto") || p.getItem_name().contains("tomato")){
+                                nameAndQuantity.add(p.getItem_qty());
+                            }
+
+
                             if (p != null)
                                 if (p.getFilePathList() != null)
                                     if (p.getPost_id().split("-")[0].equalsIgnoreCase(user.getMobNo())) {
@@ -458,6 +593,12 @@ public class FarmerFeedFragment extends Fragment {
                         } else {
                             notificationBadge.setText("" + notificationList.size());
                         }
+                        productPriceRateForTomato();
+                        productPriceRateForOnion();
+                        productPriceRateForBrinjal();
+                        productPriceRateForLadyfinger();
+                        productPriceRateForCarrot();
+
                     }
 
                     @Override
@@ -468,6 +609,367 @@ public class FarmerFeedFragment extends Fragment {
 
 
     }
+
+    private void productPriceRateForTomato() {
+        try {
+            int a = 0, b = 0, Pricesum = 0, Stocksum = 0, priceAvg = 0, StockAvg = 0, middle=0, last=0;
+            int i = 0;
+            int s=0;
+//        Collections.addAll(valSetForTomato,30, 100, 20, 120, 19, 130, 21, 90, 24, 110,22,1000);
+            for (int l = 0; l <= valSetForTomato.size() - 1; l = l + 2) {
+                a = valSetForTomato.get(l);
+                b = valSetForTomato.get(l + 1);
+                //l=l+2;
+
+            }
+            while (i <= valSetForTomato.size() - 1) {
+
+                    Pricesum = Pricesum + a;
+                    Stocksum = Stocksum + b;
+
+                i = i + 2;
+            }
+            s=valSetForTomato.size()/2;
+            priceAvg = Pricesum /s;
+            StockAvg = Stocksum / 5;
+            tomatoavg.setText(String.valueOf(priceAvg));
+
+            int min = 0, max = 0;
+            int i1 = 0;
+
+            String currentTime = new SimpleDateFormat("HH:mm aa").format(new Date());
+
+                String prdtname = null, prdtqun = null;
+                int y, quantityy = 0;
+
+            for(int k=0;k<=nameAndQuantity.size()-1;k++){
+                quantityy=quantityy+Integer.parseInt(nameAndQuantity.get(k));
+            }
+            for(int g=0;g<=valSetForTomatoResult.size()-1;g=g+2){
+                valSetForTomatoResult.add(String.valueOf(priceAvg));
+                valSetForTomatoResult.add(String.valueOf(quantityy));
+                valSetForTomato.add(Integer.parseInt(valSetForTomatoResult.get(g)));
+                valSetForTomato.add(Integer.parseInt(valSetForTomatoResult.get(g+1)));
+            }
+
+
+            while (i1 <= valSetForTomato.size() - 1) {
+                middle = valSetForTomato.get(valSetForTomato.size()-3);
+                last = valSetForTomato.get(valSetForTomato.size()-1);
+                i1 += 2;
+            }
+
+                if (middle > last) {
+                    min += priceAvg +2;
+                    int s1 = min - 1;
+                    String r1 = priceAvg + "-" + min;
+                    tomatsgs.setText(r1);
+                    tomatsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uparrow, 0, 0, 0);
+                } else {
+                    max += priceAvg + -2;
+                    String r2 = max+ "-" +priceAvg;
+                    int s2 = max + 1;
+                    tomatsgs.setText(r2);
+                    tomatsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downarrow, 0, 0, 0);
+                }
+
+
+        }
+
+        catch(Exception u){
+                Toast.makeText(context, u.getMessage(), Toast.LENGTH_LONG).show();
+
+
+        }
+    }
+    private void productPriceRateForOnion(){
+      try {
+          int a = 0, b = 0, Pricesum = 0, Stocksum = 0, priceAvg = 0, StockAvg = 0, middle=0, last=0;
+          int i = 0,s=0;
+          for (int l = 0; l <= valSetForOnion.size() - 1; l = l + 2) {
+              a = valSetForOnion.get(l);
+              b = valSetForOnion.get(l + 1);
+              //l=l+2;
+
+          }
+          while (i <= valSetForOnion.size() - 1) {
+                  Pricesum = Pricesum + a;
+                  Stocksum = Stocksum + b;
+
+              i = i + 2;
+          }
+          int u = 0;
+          s=valSetForOnion.size()/2;
+          priceAvg = Pricesum / s;
+          StockAvg = Stocksum / s;
+          onionavg.setText(String.valueOf(priceAvg));
+
+          int min = 0, max = 0;
+          int i1 = 0;
+
+          String currentTime = new SimpleDateFormat("HH:mm aa").format(new Date());
+
+          String prdtname = null, prdtqun = null;
+          int y, quantityy = 0;
+
+          for(int g=0;g<=valSetForOnionResult.size()-1;g=g+2){
+              valSetForOnionResult.add(String.valueOf(priceAvg));
+              valSetForOnionResult.add(String.valueOf(quantityy));
+              valSetForOnion.add(Integer.parseInt(valSetForOnionResult.get(g)));
+              valSetForOnion.add(Integer.parseInt(valSetForOnionResult.get(g+1)));
+          }
+
+
+          while (i1 <= valSetForOnion.size() - 1) {
+              middle = valSetForOnion.get(valSetForOnion.size()-3);
+              last = valSetForOnion.get(valSetForOnion.size()-1);
+              i1 += 2;
+          }
+
+          if (middle > last) {
+              min += priceAvg +2;
+              int s1 = min - 1;
+              String r1 = priceAvg + "-" + min;
+              onionsgs.setText(r1);
+              onionsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uparrow, 0, 0, 0);
+              //onionavg.setText(valSetForOnion.get(valSetForOnion.size()-1));
+              //onionsgs.setText(valSetForOnion.get(valSetForOnion.size()-3));
+
+          } else {
+              max += priceAvg + -2;
+              String r2 = max+ "-" +priceAvg;
+              int s2 = max + 1;
+              //onionavg.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-1)));
+              //onionsgs.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-3)));
+              onionsgs.setText(r2);
+              onionsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downarrow, 0, 0, 0);
+
+
+          }
+
+
+      }
+
+      catch(Exception u){
+          Toast.makeText(context, u.getMessage(), Toast.LENGTH_LONG).show();
+
+
+      }
+    }
+    private void productPriceRateForBrinjal(){
+        try {
+
+            int a = 0, b = 0, Pricesum = 0, Stocksum = 0, priceAvg = 0, StockAvg = 0, middle=0, last=0;
+            int i = 0,s=0;
+            for (int l = 0; l <= valSetForBrinjal.size() - 1; l = l + 2) {
+                a = valSetForBrinjal.get(l);
+                b = valSetForBrinjal.get(l + 1);
+                //l=l+2;
+
+            }
+            while (i <= valSetForBrinjal.size() - 1) {
+                    Pricesum = Pricesum + a;
+                    Stocksum = Stocksum + b;
+                i = i + 2;
+            }
+            int u = 0;
+            s=valSetForBrinjal.size()/2;
+            priceAvg = Pricesum / s;
+            StockAvg = Stocksum / s;
+            brinjalavg.setText(String.valueOf(priceAvg));
+
+            int min = 0, max = 0;
+            int i1 = 0;
+
+            String currentTime = new SimpleDateFormat("HH:mm aa").format(new Date());
+
+            String prdtname = null, prdtqun = null;
+            int y, quantityy = 0;
+
+            for(int g=0;g<=valSetForBrinjalResult.size()-1;g=g+2){
+                valSetForBrinjalResult.add(String.valueOf(priceAvg));
+                valSetForBrinjalResult.add(String.valueOf(quantityy));
+                valSetForBrinjal.add(Integer.parseInt(valSetForBrinjalResult.get(g)));
+                valSetForBrinjal.add(Integer.parseInt(valSetForBrinjalResult.get(g+1)));
+            }
+
+
+            while (i1 <= valSetForBrinjal.size() - 1) {
+                middle = valSetForBrinjal.get(valSetForBrinjal.size()-3);
+                last = valSetForBrinjal.get(valSetForBrinjal.size()-1);
+                i1 += 2;
+            }
+
+            if (middle > last) {
+                min += priceAvg +2;
+                int s1 = min - 1;
+                String r1 = priceAvg + "-" + min;
+                brinjalsgs.setText(r1);
+                brinjalsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uparrow, 0, 0, 0);
+                //onionavg.setText(valSetForOnion.get(valSetForOnion.size()-1));
+                //onionsgs.setText(valSetForOnion.get(valSetForOnion.size()-3));
+
+            } else {
+                max += priceAvg + -2;
+                String r2 = max+ "-" +priceAvg;
+                int s2 = max + 1;
+                //onionavg.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-1)));
+                //onionsgs.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-3)));
+                brinjalsgs.setText(r2);
+                brinjalsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downarrow, 0, 0, 0);
+
+
+            }
+
+
+        }
+        catch (Exception u){
+
+        }
+    }
+    private void productPriceRateForLadyfinger(){
+        try {
+            int a = 0, b = 0, Pricesum = 0, Stocksum = 0, priceAvg = 0, StockAvg = 0, middle=0, last=0;
+            int i = 0,s=0;
+            for (int l = 0; l <= valSetForLadyfinger.size() - 1; l = l + 2) {
+                a = valSetForLadyfinger.get(l);
+                b = valSetForLadyfinger.get(l + 1);
+                //l=l+2;
+
+            }
+            while (i <= valSetForLadyfinger.size() - 1) {
+                    Pricesum = Pricesum + a;
+                    Stocksum = Stocksum + b;
+                i = i + 2;
+            }
+            int u = 0;
+            s=valSetForLadyfinger.size()/2;
+            priceAvg = Pricesum / s;
+            StockAvg = Stocksum / s;
+            ladyfingeravg.setText(String.valueOf(priceAvg));
+
+            int min = 0, max = 0;
+            int i1 = 0;
+
+            String currentTime = new SimpleDateFormat("HH:mm aa").format(new Date());
+
+            String prdtname = null, prdtqun = null;
+            int y, quantityy = 0;
+
+            for(int g=0;g<=valSetForLadyfingerResult.size()-1;g=g+2){
+                valSetForLadyfingerResult.add(String.valueOf(priceAvg));
+                valSetForLadyfingerResult.add(String.valueOf(quantityy));
+                valSetForLadyfinger.add(Integer.parseInt(valSetForLadyfingerResult.get(g)));
+                valSetForLadyfinger.add(Integer.parseInt(valSetForLadyfingerResult.get(g+1)));
+            }
+
+
+            while (i1 <= valSetForLadyfinger.size() - 1) {
+                middle = valSetForLadyfinger.get(valSetForLadyfinger.size()-3);
+                last = valSetForLadyfinger.get(valSetForLadyfinger.size()-1);
+                i1 += 2;
+            }
+
+            if (middle > last) {
+                min += priceAvg +2;
+                int s1 = min - 1;
+                String r1 = priceAvg + "-" + min;
+                ladyfingersgs.setText(r1);
+                ladyfingersgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uparrow, 0, 0, 0);
+                //onionavg.setText(valSetForOnion.get(valSetForOnion.size()-1));
+                //onionsgs.setText(valSetForOnion.get(valSetForOnion.size()-3));
+
+            } else {
+                max += priceAvg + -2;
+                String r2 = max+ "-" +priceAvg;
+                int s2 = max + 1;
+                //onionavg.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-1)));
+                //onionsgs.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-3)));
+                ladyfingersgs.setText(r2);
+                ladyfingersgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downarrow, 0, 0, 0);
+
+
+            }
+
+
+        }
+        catch (Exception u){
+
+        }
+    }
+    private void productPriceRateForCarrot(){
+        try {
+            int a = 0, b = 0, Pricesum = 0, Stocksum = 0, priceAvg = 0, StockAvg = 0, middle=0, last=0;
+            int i = 0,s=0;
+            for (int l = 0; l <= valSetForCarrot.size() - 1; l = l + 2) {
+                a = valSetForCarrot.get(l);
+                b = valSetForCarrot.get(l + 1);
+                //l=l+2;
+
+            }
+            while (i <= valSetForCarrot.size() - 1) {
+                    Pricesum = Pricesum + a;
+                    Stocksum = Stocksum + b;
+                i = i + 2;
+            }
+            int u = 0;
+            s=valSetForCarrot.size()/2;
+            priceAvg = Pricesum / s;
+            StockAvg = Stocksum / s;
+            carrotavg.setText(String.valueOf(priceAvg));
+
+            int min = 0, max = 0;
+            int i1 = 0;
+
+            String currentTime = new SimpleDateFormat("HH:mm aa").format(new Date());
+
+            String prdtname = null, prdtqun = null;
+            int y, quantityy = 0;
+
+            for(int g=0;g<=valSetForCarrotResult.size()-1;g=g+2){
+                valSetForCarrotResult.add(String.valueOf(priceAvg));
+                valSetForCarrotResult.add(String.valueOf(quantityy));
+                valSetForCarrot.add(Integer.parseInt(valSetForCarrotResult.get(g)));
+                valSetForCarrot.add(Integer.parseInt(valSetForCarrotResult.get(g+1)));
+            }
+
+
+            while (i1 <= valSetForCarrot.size() - 1) {
+                middle = valSetForCarrot.get(valSetForCarrot.size()-3);
+                last = valSetForCarrot.get(valSetForCarrot.size()-1);
+                i1 += 2;
+            }
+
+            if (middle > last) {
+                min += priceAvg +2;
+                int s1 = min - 1;
+                String r1 = priceAvg + "-" + min;
+                carrotsgs.setText(r1);
+                carrotsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.uparrow, 0, 0, 0);
+                //onionavg.setText(valSetForOnion.get(valSetForOnion.size()-1));
+                //onionsgs.setText(valSetForOnion.get(valSetForOnion.size()-3));
+
+            } else {
+                max += priceAvg + -2;
+                String r2 = max+ "-" +priceAvg;
+                int s2 = max + 1;
+                //onionavg.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-1)));
+                //onionsgs.setText(String.valueOf(valSetForOnion.get(valSetForOnion.size()-3)));
+                carrotsgs.setText(r2);
+                carrotsgs.setCompoundDrawablesWithIntrinsicBounds(R.drawable.downarrow, 0, 0, 0);
+
+
+            }
+
+
+        }
+        catch (Exception u){
+
+        }
+    }
+
+
+
 
     private void onCropImage() {
         context.grantUriPermission("com.android.camera",
@@ -532,32 +1034,38 @@ public class FarmerFeedFragment extends Fragment {
     private void setImageCoverAccToTime() {
 
         Calendar c = Calendar.getInstance();
-        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
+        timeOfDay = c.get(Calendar.HOUR_OF_DAY);
 
         Log.e(TAG, "setImageCoverAccToTime: " + timeOfDay);
 
         if (timeOfDay < 5) {
             img_cover.setImageResource(R.drawable.img_night);
+            img_coverr.setImageResource(R.drawable.img_night);
             Toast.makeText(context, "Good Night", Toast.LENGTH_SHORT).show();
         } else if (timeOfDay > 5 && timeOfDay < 12) {
             img_cover.setImageResource(R.drawable.img_morning);
+            img_coverr.setImageResource(R.drawable.img_morning);
             Toast.makeText(context, "Good Morning", Toast.LENGTH_SHORT).show();
         } else if (timeOfDay >= 12 && timeOfDay < 16) {
             img_cover.setImageResource(R.drawable.img_noon);
+            img_coverr.setImageResource(R.drawable.img_noon);
             Toast.makeText(context, "Good Afternoon", Toast.LENGTH_SHORT).show();
 
         } else if (timeOfDay >= 16 && timeOfDay < 20) {
             img_cover.setImageResource(R.drawable.img_evening);
+            img_coverr.setImageResource(R.drawable.img_evening);
             Toast.makeText(context, "Good Evening", Toast.LENGTH_SHORT).show();
 
         } else if (timeOfDay >= 20) {
             img_cover.setImageResource(R.drawable.img_night);
+            img_coverr.setImageResource(R.drawable.img_night);
             Toast.makeText(context, "Good Night", Toast.LENGTH_SHORT).show();
 
         }
 
 
     }
+
 
     private void weatherProcessing() {
 //        String url="https://api.openweathermap.org/data/2.5/weather?q="
@@ -597,13 +1105,16 @@ public class FarmerFeedFragment extends Fragment {
 
                 Main main = supportClass.getMain();
 
+
                 tvCity.setText(supportClass.getName());
+                tvCityy.setText(supportClass.getName());
 
 //                Log.e(TAG, "onResponse: "+supportClass.getName());
 
                 Double temp = main.getTemp();
                 Integer temperature = (int) (temp - 273.15);
                 tvTemp.setText(String.valueOf(temperature));
+                tvTempp.setText(String.valueOf(temperature));
 
                 Double Feellike = main.getTempMin();
                 Integer feel = (int) (Feellike - 273.15);
@@ -627,12 +1138,13 @@ public class FarmerFeedFragment extends Fragment {
                 Sys sys = supportClass.getSys();
 
                 long sunrise = sys.getSunrise();
-                Date date1 = new Date(sunrise * 1000);
+                date1 = new Date(sunrise * 1000);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+                sdf = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
                 tvSunrise.setText(sdf.format(date1));
 
                 time.setText(sdf.format(Calendar.getInstance().getTime()));
+                timee.setText(sdf.format(Calendar.getInstance().getTime()));
 
 
                 long sunset = sys.getSunset();
@@ -672,9 +1184,11 @@ public class FarmerFeedFragment extends Fragment {
 
         bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_add_post);
-        EditText post_item_name = bottomSheetDialog.findViewById(R.id.bs_post_et_item_name);
+        post_item_name = bottomSheetDialog.findViewById(R.id.bs_post_et_item_name);
         EditText post_item_qty = bottomSheetDialog.findViewById(R.id.bs_post_et_item_count);
-        EditText post_item_price = bottomSheetDialog.findViewById(R.id.bs_post_et_item_price);
+        post_item_price = bottomSheetDialog.findViewById(R.id.bs_post_et_item_price);
+        post=bottomSheetDialog.findViewById(R.id.bs_post_btn_submit);
+        delete=bottomSheetDialog.findViewById(R.id.delete_photo_from_img_view);
 
         bs_progressBar = bottomSheetDialog.findViewById(R.id.bs_progressBar);
         assert bs_progressBar != null;
@@ -684,8 +1198,9 @@ public class FarmerFeedFragment extends Fragment {
                 bottomSheetDialog.findViewById(R.id.bs_post_ipl_item_name);
         TextInputLayout inputLayout_item_qty =
                 bottomSheetDialog.findViewById(R.id.bs_post_ipl_item_count);
-        TextInputLayout inputLayout_item_price =
+        inputLayout_item_price =
                 bottomSheetDialog.findViewById(R.id.bs_post_ipl_item_price);
+        suggestion=bottomSheetDialog.findViewById(R.id.suggestion);
 
         assert post_item_name != null;
         assert inputLayout_item_name != null;
@@ -703,12 +1218,16 @@ public class FarmerFeedFragment extends Fragment {
             builder.setCancelable(false);
             builder.setView(view);
 
+
+
+
             ImageView imageView_Camera = view.findViewById(R.id.image_Camera);
             ImageView imageView_Gallery = view.findViewById(R.id.image_gallery);
 
 
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
+
 
             imageView_Camera.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -734,7 +1253,31 @@ public class FarmerFeedFragment extends Fragment {
             //selectImage();
         });
 
+delete.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        try {
+            int i = bs_imageContainer.getChildCount() - 1;
+            //Toast.makeText(context,String.valueOf(uniqueDataList.get(0)),Toast.LENGTH_SHORT).show();
+            for (int j = 0; j <= i; j++) {
+                imageView.setImageDrawable(null);
+                bs_imageContainer.removeAllViews();
+            }
+            uniqueDataList.clear();
+            compareImage.clear();
+            //Toast.makeText(context,String.valueOf(uniqueDataList.size()),Toast.LENGTH_SHORT).show();
+            filePathList.clear();
+            delete.setVisibility(View.GONE);
+            post.setClickable(true);
+            post.setText(R.string.post);
+            post.setBackground(getContext().getResources().getDrawable(R.drawable.radio_loc_selected));
+        }catch (Exception r){
 
+        }
+
+
+    }
+});
 
 
                 /*bottomSheetDialog.findViewById(R.id.bs_post_btn_takeImage).setOnClickListener(v->{
@@ -752,18 +1295,19 @@ public class FarmerFeedFragment extends Fragment {
                         }
                 });*/
 
-        bottomSheetDialog.findViewById(R.id.bs_post_btn_submit).setOnClickListener(v -> {
+       post.setOnClickListener(v -> {
 
             Log.e(TAG, "FilePath " + filePathList.toString());
 
             if (post_item_name.getText().toString().isEmpty()) {
-                inputLayout_item_name.setError("Enter Name of the item");
+                inputLayout_item_name.setError(getString(R.string.errorforname));
+
             } else if (post_item_qty.getText().toString().isEmpty()) {
-                inputLayout_item_qty.setError("Enter Name of the item");
+                inputLayout_item_qty.setError(getString(R.string.errorforname));
             } else if (post_item_price.getText().toString().isEmpty()) {
-                inputLayout_item_price.setError("Enter Name of the item");
+                inputLayout_item_price.setError(getString((R.string.errorforname)));
             } else if (filePathList == null) {
-                Toast.makeText(context, "Select Atlas one Image", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Select at least one Image", Toast.LENGTH_LONG).show();
             } else {
 
                 //good to go, creating post
@@ -783,7 +1327,11 @@ public class FarmerFeedFragment extends Fragment {
             }
         });
 
+
+
     }
+
+
 
     private void takeImagefromCamera() {
 
@@ -819,7 +1367,10 @@ public class FarmerFeedFragment extends Fragment {
 
         bs_progressBar.setVisibility(View.VISIBLE);
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.getDefault());
+        SimpleDateFormat df = new SimpleDateFormat("ddMMMyyyy-hhmmss", Locale.ENGLISH);
+
+
+
         String code = df.format(c);
         String post_id = user.getMobNo() + "-" + code;
 
@@ -916,13 +1467,14 @@ public class FarmerFeedFragment extends Fragment {
     }
 
     private void showpg() {
-        pgMsg.setText("Fetching weather data");
+        pgMsg.setText(R.string.fetchingweatherdata);
         dialog.show();
     }
 
     private void detectImage() throws IOException {
         // bm=((BitmapDrawable)imageView.getDrawable()).getBitmap();
-        for (int i = 0; i < filePathList.size(); i++) {
+        int pathListSize=filePathList.size();
+        for (int i = 0; i < pathListSize; i++) {
             list = filePathList.get(i);
 
         }
@@ -976,41 +1528,80 @@ public class FarmerFeedFragment extends Fragment {
                     maxPos = i;
                 }
             }
-            String[] classes = {"tomato", "onion", "brinjal",
-                    "cabbage",
-                    "carrot",
-                    "drumstick",
-                    "lady finger"};
+            String[] classes = {"Tomato", "Onion", "Brinjal","Lady finger", "Carrot"};
             String max = classes[maxPos];
-            try {
-                String[] stringArray = new String[classes.length];   //Declarartion by specifying the size
-                for (int j = 0; j < classes.length; j++) {
-                    stringArray[j] = max;
-                }
-                for (int i = 0; i < stringArray.length; i++) {
-                    if (stringArray[0] == stringArray[i + 1]) {
-                        Toast.makeText(context, stringArray[0], Toast.LENGTH_SHORT).show();
-                        post_item_name.setText(stringArray[0]);
-
-                    } else {
-                        Toast.makeText(context, "errorrrrrrrrrrrrrrrr", Toast.LENGTH_SHORT).show();
-
-                    }
-                }
-            } catch (Exception e) {
-                Toast.makeText(context, "Error", Toast.LENGTH_LONG).show();
+         // Toast.makeText(context,max,Toast.LENGTH_LONG).show();
+         /* try{
+          for(int i=0;i<pathListSize;i++){
+                compareImage.add(max);
             }
+            if(pathListSize<=1){
+                Toast.makeText(context, compareImage.get(0), Toast.LENGTH_LONG).show();
+            }
+            else {
+                for(int i=0;i<pathListSize;i++) {
 
-            // names=new String[classes.length];
-            //  Toast.makeText(context, max, Toast.LENGTH_SHORT).show();
-            // textView.setText(classes[maxPos]);
+
+                }
+
+            }
+          }catch (Exception e){
+              Toast.makeText(context,"Error",Toast.LENGTH_LONG).show();
+              }*/
+            try {
+                for (int i = 0; i < pathListSize; i++) {
+                    compareImage.add(max);
+                }
+               uniqueDataList = compareImage.stream().distinct().collect(Collectors.toList());
+                if (uniqueDataList.size() == 1) {
+                    resultString.add(uniqueDataList.get(0));
+                    Toast.makeText(context, resultString.get(0), Toast.LENGTH_SHORT).show();
+                    post_item_name.setText(resultString.get(0));
+
+                    if(resultString.get(0).equalsIgnoreCase("tomato")){
+                        suggestion.setVisibility(View.VISIBLE);
+                        suggestion.setText(getString(R.string.suggestions)+tomatsgs.getText().toString());
+                    }
+                    if(resultString.get(0).equalsIgnoreCase("onion")){
+                        //suggestionList.add(onionsgs.getText().toString());
+                        suggestion.setVisibility(View.VISIBLE);
+                        suggestion.setText(getString(R.string.suggestions)+onionsgs.getText().toString());
+                    }
+                    if(resultString.get(0).equalsIgnoreCase("brinjal")){
+                        suggestion.setVisibility(View.VISIBLE);
+                        suggestion.setText(getString(R.string.suggestions)+brinjalsgs.getText().toString());
+                    }
+                    if(resultString.get(0).equalsIgnoreCase("lady finger")){
+                        suggestion.setVisibility(View.VISIBLE);
+                        suggestion.setText(getString(R.string.suggestions)+ladyfingersgs.getText().toString());
+                    }
+                    if(resultString.get(0).equalsIgnoreCase("carrot")){
+                        suggestion.setVisibility(View.VISIBLE);
+                        suggestion.setText(getString(R.string.suggestions)+carrotsgs.getText().toString());
+                    }
+                    post.setClickable(true);
+                    delete.setVisibility(View.GONE);
+
+                } else {
+                    //Toast.makeText(context, "Please Upload Same Images of one Product", Toast.LENGTH_SHORT).show();
+                    post_item_name.setText(" ");
+                    post.setClickable(false);
+                    post.getBackground().setAlpha(128);  // 25% transparent
+                    post.setText(getResources().getString( R.string.postbutton));
+                    post.setTextSize(18);
+                    delete.setVisibility(View.VISIBLE);
+
+                }
+            }catch (Exception e){
+
+            }
 
 
             String s = "";
             for (int i = 0; i < classes.length; i++) {
                 s += String.format("%s: %.1f%%\n", classes[i], confidences[i] * 100);
-            }
-            // textView1.setText(s);
+                //Toast.makeText(context,s,Toast.LENGTH_LONG).show();
+                }
 
 
             // Releases model resources if no longer used.
@@ -1019,4 +1610,8 @@ public class FarmerFeedFragment extends Fragment {
             // TODO Handle the exception
         }
     }
+
+
+
+
 }

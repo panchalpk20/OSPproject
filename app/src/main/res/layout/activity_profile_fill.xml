@@ -45,6 +45,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/fill_profile"
+                    android:fontFamily="sans-serif-smallcaps"
                     android:textColor="@color/textInET"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -141,7 +142,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="15dp"
-                    android:gravity="start"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -174,7 +176,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@color/buttonBackground"
+                    android:background="@drawable/radio_loc_selected"
                     android:text="@string/stringcontinue"
                     android:textAllCaps="false"
                     android:textColor="@color/white"

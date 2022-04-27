@@ -2,8 +2,13 @@ package com.anngrynerds.ospproject.home;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.WindowManager;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.anngrynerds.ospproject.R;
@@ -14,6 +19,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -26,7 +33,15 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setContentView(R.layout.activity_home);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW,
+                WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        loadLanguage();
         checkIfMissingInfo();
         pref = getApplication()
                 .getSharedPreferences(Constantss.sharedPrefID, MODE_PRIVATE);
@@ -133,13 +148,30 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void checkIfMissingInfo() {
+     private void checkIfMissingInfo() {
 
         //todo
         SharedPreferences prefs = this.getSharedPreferences("com.anngrynerds.ospproject.home", Context.MODE_PRIVATE);
         String phno = prefs.getString("id", "");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
 //        startActivity(new Intent(HomeActivity.this, ProfileFill.class));
+    }
+
+    private void setLocale(String language) {
+        Locale local=new Locale(language);
+        Locale.setDefault(local);
+
+        Configuration configuration=new Configuration();
+        configuration.locale=local;
+        getBaseContext().getResources().updateConfiguration(configuration,getBaseContext().getResources().getDisplayMetrics());
+        //recreate();
+    }
+    private void loadLanguage(){
+        SharedPreferences preferences=getSharedPreferences(Constantss.sharedPrefID,MODE_PRIVATE);
+        String lang=preferences.getString("app_lang","");
+        if(!lang.isEmpty())
+        setLocale(lang);
+
     }
 
 

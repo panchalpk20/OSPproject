@@ -9,10 +9,13 @@ public class User {
     String lang;
     String role;
     String city;
+    String userProfile;
 
     public User(){}
 
-    public User(String mobNo, String address, String name, String lat, String lang, String role, String city) {
+
+
+    public User(String mobNo, String address, String name, String lat, String lang, String role, String city, String profile) {
         this.mobNo = mobNo;
         this.address = address;
         this.name = name;
@@ -20,8 +23,15 @@ public class User {
         this.lang = lang;
         this.role = role;
         this.city = city;
+        this.userProfile=profile;
+    }
+    public String getUserProfile() {
+        return userProfile;
     }
 
+    public void setUserProfile(String userProfile) {
+        this.userProfile = userProfile;
+    }
     public String getCity() {
         return city;
     }
@@ -89,6 +99,7 @@ public class User {
                 ", lang='" + lang + '\'' +
                 ", role='" + role + '\'' +
                 ", city='" + city + '\'' +
+                ",imgProfile='" + userProfile + '\''+
                 '}';
     }
 }

@@ -21,13 +21,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center|start"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_horizontal"
             android:paddingStart="18dp"
             android:paddingTop="38dp"
             android:paddingEnd="10dp"
             android:paddingBottom="18dp"
             android:text="@string/order_details"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
+            android:fontFamily="sans-serif-smallcaps"
             android:textSize="28sp" />
 
 
@@ -143,28 +145,52 @@
 
                 </TableLayout>
 
+                <TextView
+                    android:id="@+id/addresss"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:layout_margin="10dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
             </LinearLayout>
 
 
         </androidx.cardview.widget.CardView>
+<RelativeLayout
+    android:id="@+id/checkout_btn_pay"
+    android:background="@drawable/radio_loc_selected"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginTop="40dp"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin">
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/checkout_btn_pay"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@color/buttonBackground"
-            android:drawablePadding="10dp"
-            android:minWidth="100dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="20dp"
-            android:text="Pay rs 1234345"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="24sp" />
+    <TextView
+        android:id="@+id/t1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/pay"
+        android:textColor="@color/white"
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/pay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/t1"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/white"
+        android:textSize="24dp" />
+</RelativeLayout>
+
+
+
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/checkout_btn_cod"
@@ -174,7 +200,7 @@
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="40dp"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:background="@color/buttonBackground2"
+            android:background="@drawable/radio_loc_selected"
             android:drawablePadding="10dp"
             android:minWidth="100dp"
             android:paddingStart="10dp"

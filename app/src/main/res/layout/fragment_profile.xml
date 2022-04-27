@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightBackground"
     android:orientation="vertical"
     >
-
+    <ImageView
+        android:id="@+id/profile_imageView"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:gravity="center_vertical"
+        android:src="@drawable/ic_user"
+        android:foreground="@drawable/roundedforprofileimg"/>
 
     <LinearLayout
          android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".home.ProfileFragment"
         android:orientation="vertical"
         >
@@ -33,22 +39,50 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    >
+                    <LinearLayout
+                     android:layout_width="match_parent"
+                     android:layout_height="wrap_content"
+                     android:orientation="horizontal">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            >
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/profile_page_btn_edit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_margin="5dp"
-                        android:background="@drawable/spinner_select_city"
-                        android:drawablePadding="5dp"
-                        android:paddingStart="5dp"
-                        android:paddingEnd="5dp"
-                        android:text="@string/edit_profile"
-                        android:layout_gravity="center"
-                        android:textAllCaps="false"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/profile_page_btn_edit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="18dp"
+                                android:layout_centerInParent="true"
+                                android:background="@drawable/spinner_select_city"
+                                android:drawablePadding="5dp"
+                                android:paddingStart="5dp"
+                                android:paddingEnd="5dp"
+                                android:text="@string/edit_profile"
+                                android:textAllCaps="false"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <ImageButton
+                                android:id="@+id/Btlanguage"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/options"
+                                android:background="@drawable/ic_baseline_language_24" />
+
+                            <ImageView
+                                android:id="@+id/options"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="20dp"
+                                android:background="@drawable/menudots"
+                                android:paddingTop="2dp" />
+                        </RelativeLayout>
+
+                    </LinearLayout>
 
                     <ProgressBar
                         android:id="@+id/profile_page_pg"
@@ -62,89 +96,88 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+
                     <TextView
                         android:id="@+id/profile_page_tv_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="38dp"
+                        android:layout_width="250dp"
+                        android:layout_height="25dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/style_tv"
                         android:drawablePadding="10dp"
                         android:gravity="center_vertical"
+                        android:layout_gravity="center"
                         android:paddingStart="5dp"
                         android:paddingEnd="5dp"
                         android:singleLine="true"
                         android:text="@string/blank"
                         android:textColor="@color/textInET"
-                        android:textSize="@dimen/normalText"
+                        android:textSize="14dp"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_user" />
 
 
                     <TextView
                         android:id="@+id/profile_page_tv_mobile_no"
-                        android:layout_width="match_parent"
-                        android:layout_height="38dp"
+                        android:layout_width="250dp"
+                        android:layout_height="25dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/style_tv"
                         android:drawablePadding="10dp"
                         android:enabled="false"
                         android:gravity="center_vertical"
+                        android:layout_gravity="center"
                         android:paddingStart="8dp"
                         android:paddingEnd="5dp"
                         android:text="@string/blank"
                         android:textColor="@color/textInET"
-                        android:textSize="@dimen/normalText"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/profile_page_tv_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="38dp"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/style_tv"
                         android:drawablePadding="10dp"
                         android:gravity="center_vertical"
+                        android:layout_gravity="center"
                         android:paddingStart="7dp"
                         android:paddingEnd="5dp"
                         android:text="@string/blank"
+                        android:lines="6"
+                        android:maxLines="5"
+                        android:minLines="1"
                         android:textColor="@color/textInET"
-                        android:textSize="@dimen/normalText"
+                        android:textSize="14dp"
                         android:textStyle="bold" />
 
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/profile_page_btn_"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/buttonBackground2"
-                        android:drawablePadding="5dp"
-                        android:text="Edit Profile"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp">
 
 
-                    <androidx.appcompat.widget.AppCompatButton
-                        android:id="@+id/profile_page_btn_myorders"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/buttonBackground2"
-                        android:drawablePadding="5dp"
-                        android:text="@string/my_orders"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/profile_page_btn_myorders"
+        android:layout_width="250dp"
+        android:layout_height="30dp"
+       android:layout_gravity="center_horizontal"
+        android:width="120dp"
+        android:background="@drawable/radio_loc_regular"
+        android:text="@string/my_orders"
+        android:textSize="14sp" />
 
+
+        </LinearLayout>
                 </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -155,17 +188,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:id="@+id/profile_posts_container"
             app:contentPadding="10dp"
             >
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="Your Posts"
-                android:layout_margin="10dp"
-                android:textSize="20sp"
+                android:text="@string/your_posts"
+                android:textSize="16dp"
                 android:textStyle="bold"
                 android:textColor="@color/textColor"
                 />
@@ -174,7 +204,7 @@
                 android:id="@+id/profile_rc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="25dp"
             />
 
         </androidx.cardview.widget.CardView>

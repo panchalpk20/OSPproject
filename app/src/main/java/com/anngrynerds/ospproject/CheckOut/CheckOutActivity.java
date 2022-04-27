@@ -6,12 +6,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,21 +43,28 @@ public class CheckOutActivity extends AppCompatActivity {
     Context context;
     int totalCost;
     TextView tv_totalCost;
-    Button btn_pay;
+    RelativeLayout btn_pay;
     Button btn_cod;
     private User user;
+    TextView addresss,pay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_out);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW,
+                WindowManager.LayoutParams.FIRST_APPLICATION_WINDOW);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         context = CheckOutActivity.this;
 
         tableLayout = findViewById(R.id.checkout_tableLayout);
         tv_totalCost = findViewById(R.id.checkout_tv_totalcost);
         btn_pay = findViewById(R.id.checkout_btn_pay);
         btn_cod = findViewById(R.id.checkout_btn_cod);
-
+        addresss=findViewById(R.id.addresss);
+        pay=findViewById(R.id.pay);
         SharedPreferences mPrefs =
                 context.getSharedPreferences(Constantss.sharedPrefID, Context.MODE_PRIVATE);
         Gson gson = new Gson();
@@ -62,11 +72,11 @@ public class CheckOutActivity extends AppCompatActivity {
         user = gson.fromJson(json, User.class);
 
         String json1 = getIntent().getStringExtra(EXTRA_OrderObject);
+        String address=getIntent().getStringExtra("address");
         order = new Gson().fromJson(json1, Order.class);
-
         order.setToId(user.getMobNo());
         order.setOrderStatus(Constantss.ORDER_STATUS_PROCESSING);
-
+        addresss.setText("Confirm address: "+address);
         totalCost = 0;
 
         TableRow tableRow = new TableRow(context);
@@ -100,7 +110,7 @@ public class CheckOutActivity extends AppCompatActivity {
         tableLayout.addView(tableRow);
 
         tv_totalCost.setText(String.valueOf(totalCost));
-        btn_pay.setText(MessageFormat.format("Pay{0}", totalCost));
+        pay.setText(MessageFormat.format("{0}", totalCost));
 
 
         btn_pay.setOnClickListener(v -> {
@@ -109,10 +119,10 @@ public class CheckOutActivity extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-            builder.setTitle("Payment successful?");
-            builder.setPositiveButton("yes", (dialog, which) -> makeOrder());
+            builder.setTitle(R.string.paysuccess);
+            builder.setPositiveButton(R.string.yes, (dialog, which) -> makeOrder());
 
-            builder.setNegativeButton("No", (dialog, which) -> paymentFailed());
+            builder.setNegativeButton(R.string.no, (dialog, which) -> paymentFailed());
 
 
         });
@@ -157,9 +167,9 @@ public class CheckOutActivity extends AppCompatActivity {
 
                                     if(task.isSuccessful()){
                                         new AlertDialog.Builder(context)
-                                                .setTitle("Order Successful!!")
-                                                .setMessage("Your order has been placed successfully!")
-                                                .setPositiveButton("OK", (dialog, which) -> {
+                                                .setTitle(R.string.ordersuccess)
+                                                .setMessage(R.string.orderplaced)
+                                                .setPositiveButton(R.string.ok, (dialog, which) -> {
 
                                                     dialog.dismiss();
 

@@ -16,9 +16,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.anngrynerds.ospproject.R;
@@ -66,6 +68,11 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull FarmerOrderAdapter.ViewHolder holder, int position) {
+
+
+
+
+
         Order order = list.get(position);
         int totalCost = 0;
         totalCost = Integer.parseInt(order.getCost())*Integer.parseInt(order.getQty());
@@ -96,9 +103,7 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
                 buyer = snapshot.getValue(User.class);
 
                 if (buyer != null) {
-                    holder.tv_soldTo.setText(
-                            MessageFormat.format(
-                                    "Sold to the - {0}", buyer.getName()));
+                    holder.tv_soldTo.setText(buyer.getName().toString());
                 }
 
             }
@@ -108,21 +113,58 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
 
             }
         });
+        if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_CANCELLED)) {
+            holder.cardView.getBackground().setAlpha(128);  // 25% transparent
+            holder.btn_completed.getBackground().setAlpha(128);
+            holder.btn_completed.setEnabled(false);
+            holder.btn_cancel.getBackground().setAlpha(128);
+            holder.btn_cancel.setEnabled(false);
+            holder.itemView.setEnabled(false);
+            holder.cancelimg.setVisibility(View.VISIBLE);
+            holder.cancelimg.setOnClickListener(v->{
+                DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+                    switch (which){
+                        case DialogInterface.BUTTON_POSITIVE:
+                            ref.child(user.getCity()).child(Constantss.orderNode).child(order.getOrderId()).removeValue();
+
+                            int newPosition = holder.getAdapterPosition();
+                            list.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(newPosition, list.size());
+
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+
+                            break;
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(R.string.deleit);
+                builder.setMessage(R.string.cnfdel).setPositiveButton(R.string.yes, dialogClickListener)
+                        .setNegativeButton(R.string.no, dialogClickListener).show();
+            });
+        }
 
 
         holder.tv_orderStatus.setText(order.getOrderStatus());
 
         if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_CANCELLED)){
+            holder.tv_orderStatus.setText(R.string.cancelled);
             holder.tv_orderStatus.setTextColor(Color.RED);
         }else if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_COMPLETED_CUSTOMER)){
+            holder.tv_orderStatus.setText(R.string.complete);
             //green
             holder.tv_orderStatus.setTextColor(Color.GREEN);
 
         }if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_COMPLETED_FARMER)){
+            holder.tv_orderStatus.setText(R.string.shiped);
             //blue
             holder.tv_orderStatus.setTextColor(Color.BLUE);
 
         }if(order.getOrderStatus().equalsIgnoreCase(Constantss.ORDER_STATUS_PROCESSING)){
+            holder.tv_orderStatus.setText(R.string.procesing);
             //orange
             holder.tv_orderStatus.setTextColor(Color.parseColor("#FFAB00"));
 
@@ -133,7 +175,7 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
         holder.tv_price.setText(order.getCost());
         holder.tv_qty.setText(order.getQty());
 
-        holder.tv_totalCost.setText(MessageFormat.format("Total Cost Rs {0}", totalCost));
+        holder.tv_totalCost.setText(MessageFormat.format("{0}", totalCost));
 
         holder.btn_completed.setOnClickListener(v->{
             DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
@@ -154,9 +196,9 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Confirm Order shipment");
-            builder.setMessage("is Order successfully shipped from you?").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            builder.setTitle(R.string.cnfship);
+            builder.setMessage(R.string.successfullyshipped).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener).show();
         });
 
         holder.btn_cancel.setOnClickListener(v->{
@@ -168,7 +210,6 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
                                 .child(Constantss.orderNode)
                                 .child(order.getOrderId()).child("orderStatus").setValue(Constantss.ORDER_STATUS_CANCELLED);
 
-
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
@@ -178,10 +219,11 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
             };
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Confirm Order Cancel");
-            builder.setMessage("Are you sure you want to cancel order").setPositiveButton("Yes", dialogClickListener)
-                    .setNegativeButton("No", dialogClickListener).show();
+            builder.setTitle(R.string.cancelorder);
+            builder.setMessage(R.string.surecancelorder).setPositiveButton(R.string.yes, dialogClickListener)
+                    .setNegativeButton(R.string.no, dialogClickListener).show();
         });
+
 
         int finalTotalCost = totalCost;
         holder.itemView.setOnClickListener(v->{
@@ -263,11 +305,13 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
         TextView tv_totalCost;
         Button btn_completed;
         Button btn_cancel;
-        ImageView img;
+        ImageView img,cancelimg;
         TextView tv_name;
         TextView tv_qty;
         TextView tv_price;
         TextView tv_orderStatus;
+        CardView cardView;
+
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -282,6 +326,8 @@ public class FarmerOrderAdapter extends RecyclerView.Adapter<FarmerOrderAdapter.
             tv_qty = itemView.findViewById(R.id.item_farmer_order_qty);
             tv_price = itemView.findViewById(R.id.item_farmer_order_price);
             tv_orderStatus = itemView.findViewById(R.id.item_farmer_order_status);
+            cardView=itemView.findViewById(R.id.cardview2);
+            cancelimg=itemView.findViewById(R.id.imgcancel);
 
 
         }

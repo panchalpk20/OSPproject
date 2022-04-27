@@ -8,6 +8,14 @@
     android:background="@color/lightBackground"
     tools:context=".login.LoginActivity">
 
+    <ImageView
+        android:id="@+id/verifcationdone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:visibility="gone"
+        android:src="@drawable/verificationdone"
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -72,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:text="@string/send_otp"
-                    android:background="@color/buttonBackground"
+                    android:background="@drawable/radio_loc_selected"
                     android:textAllCaps="false"
                     android:textSize="18sp"
                     android:textColor="@color/white"
@@ -132,7 +140,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:text="@string/verify"
-                    android:background="@color/buttonBackground"
+                    android:background="@drawable/radio_loc_selected"
                     android:textAllCaps="false"
                     android:textSize="18sp"
                     android:textColor="@color/white"

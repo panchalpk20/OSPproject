@@ -53,6 +53,7 @@
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/cancel.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/cancelbutton.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/cardviewround.xml" value="0.2703125" />
+        <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/downarrow.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/dropdown_arrow.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/gradient.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.2703125" />
@@ -77,7 +78,7 @@
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/drawable/twobuttons.xml" value="0.2703125" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_check_out.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_home.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_login.xml" value="0.14855072463768115" />
+        <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_profile_fill.xml" value="0.264" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/activity_select_language.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/patil/Desktop/Digital Farming Mobile Application/app/src/main/res/layout/bottom_sheet_add_post.xml" value="0.25416666666666665" />

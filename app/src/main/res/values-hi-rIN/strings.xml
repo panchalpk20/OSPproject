@@ -142,10 +142,10 @@
     <string name="ok">ठीक</string>
     <string name="paysuccess">भुगतान सफल?</string>
     <string name="sendotp">ओटीपी भेजें रहे हे</string>
-    <string name="rusure">Are you sure?</string>
-    <string name="logoutt">Logout?</string>
-    <string name="entervaliddata">Enter Valid Data</string>
-    <string name="disabled">This post has been disabled</string>
+    <string name="rusure">क्या आपको यकीन है?</string>
+    <string name="logoutt">लॉगआउट?</string>
+    <string name="entervaliddata">मान्य डेटा दर्ज करें</string>
+    <string name="disabled">यह पोस्ट अक्षम कर दी गई है</string>
     <string-array name="cities">
         <item>पुणे</item>
         <item>मुंबई</item>
